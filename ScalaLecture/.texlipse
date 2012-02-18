@@ -1,0 +1,14 @@
+#TeXlipse project settings
+#Sat Feb 18 13:04:22 CET 2012
+markTmpDer=true
+builderNum=2
+outputDir=target
+makeIndSty=
+bibrefDir=
+outputFormat=pdf
+tempDir=tmp
+mainTexFile=ScalaLecture.tex
+outputFile=ScalaLecture.pdf
+langSpell=en
+markDer=true
+srcDir=source
