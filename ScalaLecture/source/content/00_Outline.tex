@@ -1,0 +1,15 @@
+\makeatletter						% resets the section counter for each part
+\numberwithin{section}{part}		% resets the section counter for each part
+\AtBeginPart{
+	\beamer@tocsectionnumber=0		% resets the section counter for each part
+	\relax							% resets the section counter for each part
+	\begin{frame}
+		\partpage					% inserts the part page before each part
+	\end{frame}}
+\makeatother						% resets the section counter for each part
+
+\AtBeginSection{
+\begin{frame}{Outline}
+   \tableofcontents[currentsection]	% inserts the table of sections  
+\end{frame}
+}
