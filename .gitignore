@@ -1,4 +1,9 @@
 .metadata/
 CodeSamples/
 Thesis/
-*.synctec.gz
+
+# Latex
+*.aux
+*.log
+*.toc
+*.synctex.gz
