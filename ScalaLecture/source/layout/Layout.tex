@@ -6,7 +6,64 @@
 \useoutertheme{default}
 \useinnertheme{default}
 
-\setbeamercovered{transparent}
 \beamertemplatenavigationsymbolsempty
 
 \usepackage{graphicx}
+\usepackage{tikz}
+\usetikzlibrary{arrows,shapes,trees}
+
+\usepackage{listings} % Sourcecode syntax highlighting
+\renewcommand\lstlistlistingname{List of Listings}
+\lstdefinelanguage{scala}{ % "define" Scala
+  morekeywords={abstract,case,catch,class,def,%
+    do,else,extends,false,final,finally,%
+    for,if,implicit,import,match,mixin,%
+    new,null,object,override,package,%
+    private,protected,requires,return,sealed,%
+    super,this,throw,trait,true,try,%
+    type,val,var,while,with,yield,%
+    % Java keywords from here
+    public, void, int, static, implements, interface, enum},
+  otherkeywords={=>,<-,<\%,<:,>:,\#},
+  sensitive=true,
+  morecomment=[l]{//},
+  morecomment=[n]{/*}{*/},
+  morestring=[b]",
+  morestring=[b]',
+  morestring=[b]"""
+}
+
+\lstdefinelanguage{cSharp}{ % "define" cSharp
+  morekeywords={var, using},
+  sensitive=true,
+}
+
+\lstdefinelanguage{keywordsAndStrings}{ % "define" keywordsAndStrings
+  morekeywords={var, val, def},
+  sensitive=true,
+  morestring=[b]"
+}
+
+\usepackage{color}
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+ 
+\lstset{ % Default settings for code listings
+  frame=tb,
+  language=scala,
+  aboveskip=3mm,
+  belowskip=3mm,
+  showstringspaces=false,
+  columns=flexible,
+  basicstyle={\small\ttfamily},
+  numbers=none,
+  captionpos=t,
+  numberstyle=\tiny\color{gray},
+  keywordstyle=\color{blue},
+  commentstyle=\color{dkgreen},
+  stringstyle=\color{mauve},
+  frame=none,
+  breakatwhitespace=true
+  tabsize=3
+}
