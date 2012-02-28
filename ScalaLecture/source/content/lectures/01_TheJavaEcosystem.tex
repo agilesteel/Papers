@@ -1,5 +1,5 @@
 \part[The Java Ecosystem]{The Java Ecosystem}
-\section{A History Lesson}
+\section{Fight metal programming}
 
 \begin{frame}{Once upon a time\ldots}
 \visible<2->{in the land of computers there were 10101110010101101\ldots\\}
@@ -9,36 +9,78 @@
 \end{frame}
 
 \begin{frame}[fragile]{Portability}
-\begin{block}{\alert{Platform Dependency}}
+\begin{alertblock}{Platform Dependency}
 \begin{lstlisting}
 for(os <- List("linux", "mac", "windows"))
   println("If you compile a C program under " + os
             + "you can run it only on " + os + ".")
 \end{lstlisting}
-\end{block}
+\end{alertblock}
 \pause
 Sometimes a recompilation is not sufficient. \alert{The code} has to be adapted!
 \pause
-\begin{block}{\textcolor{green}{Platform Independency}}
+\begin{block}{Platform Independency}
 Write Once, Run Anywhere.
 \end{block}
 \end{frame}
 
-\pictureFrame{Problem - Unmanaged code}{resources/PlatformDependency.pdf}
+\pictureframe{Problem - Unmanaged code}{resources/PlatformDependency.pdf}
 
-\pictureFrame{Solution - Managed code}{resources/PlatformIndependency.pdf}
+\begin{frame}{Problem - Unmanaged code 2}
+\begin{block}{Why is unmanaged code a problem?}
+\begin{enumerate}
+  \pause
+  \item portability issues
+  \pause
+  \item low level hazards like buffer overflows, segmentation faults etc.
+\end{enumerate}
+\end{block}
+\pause
+\begin{alertblock}{The problem, programming language designers are trying to
+solve:} Software development is not about programming the hardware, it is about
+abstracting over the hardware!
+\end{alertblock}
+\end{frame}
+
+\pictureframe{Solution - Managed code}{resources/PlatformIndependency.pdf}
+
+\begin{frame}{Solution - Managed code 2}
+\begin{block}{Why is managed code a solution?}
+\begin{enumerate}
+  \pause
+  \item portability issues are being taken care by VM vendors.
+  \pause
+  \item low level hazards like buffer overflows, segmentation faults etc. are
+  being handled by the VM.
+  \pause
+  \item programs as-well as programming languages are changing every second;
+  platforms, are fairly stable!
+\end{enumerate}
+\end{block}
+\pause
+\begin{block}{Wind of Change}
+\begin{itemize}
+  \item it is \textcolor{blue}{feasible} to change a program.
+  \item it is \textcolor{orange}{hard} to change a programming language.
+  \item it is \textcolor{red}{very hard} to change a platform, but platforms are
+  not required to be frequently changed.
+\end{itemize}
+\end{block}
+\end{frame}
 
 \begin{frame}{Virtual Machines}
 \begin{block}{Operating System}
 An operating system is an abstraction over a hardware \highlight{machine}.
 \end{block}
+\pause
 \begin{block}{Virtual Machine}
 A \highlight{virtual} machine is an abstraction over an operating system.
 \end{block}
-\begin{exampleblock}{Known VMs}
+\pause
+\begin{exampleblock}{Well-known VMs}
 \begin{description}
   \item[Java] Java Virtual Machine (JVM)
-  \item[.Net] Common Language Infrustructure (CLI)
+  \item[.Net] Common Language Runtime (CLR)
   \item[Android] Dalvik virtual machine
   \item
   and\link{http://www.en.wikipedia.org/wiki/Virtual_machine\#List_of_virtual_machine_software}{many more}
@@ -47,8 +89,8 @@ A \highlight{virtual} machine is an abstraction over an operating system.
 \end{frame}
 
 \begin{frame}{Managed Programming Languages}
-\begin{block}{Java - runs everywhere}
-\begin{description}
+\begin{block}{JVM - runs everywhere}
+\begin{description}[<+->]
 	\item[\link{http://en.wikipedia.org/wiki/Java_\%28programming_language\%29}{Java}]
 	Statically typed OO language
 	\item[\link{http://en.wikipedia.org/wiki/Scala_programming_language}{Scala}]
@@ -62,8 +104,8 @@ A \highlight{virtual} machine is an abstraction over an operating system.
 	more}
 \end{description}
 \end{block}
-\begin{block}{.Net - runs only on windows}
-\begin{description}
+\begin{block}{CLR - runs only on Windows}
+\begin{description}[<+->]
 	\item[\link{http://en.wikipedia.org/wiki/C_Sharp_\%28programming_language\%29}{C\#}]
 	Statically typed OO \& FP language
 	\item[\link{http://en.wikipedia.org/wiki/Visual_Basic_.NET}{VB}] Statically
@@ -77,11 +119,30 @@ A \highlight{virtual} machine is an abstraction over an operating system.
 \end{frame}
 
 \begin{frame}{Managed Programming Languages 2}
-\begin{block}{Android}
+\begin{block}{Dalvik - runs only on Android}
 Java is officially supported. Every JVM language should theoretically work.\highlight{Scala}
 works.\link{http://stackoverflow.com/questions/1994703/which-programming-languages-can-i-use-on-android-dalvik}{Few others} work as-well.
 \end{block}
 \end{frame}
+
+\begin{frame}{JVM - People's Choice}
+\begin{center}
+\includegraphics[scale=0.25]{resources/JVM.png}
+\end{center}
+The code is \alert{not} compiled to \highlight{binary}.\\
+The code is compiled to the so called \highlight{byte-code}.\\
+The \highlight{JVM} is a software component, which runs the
+\highlight{byte-code}.\\
+A JVM implementation exists for almost \highlight{every platform}.\\
+\highlight{Java} is the most used language on the \highlight{JVM}.\\
+The most used \highlight{Java} compiler is called \highlight{javac}. 
+\end{frame}
+
+\pictureframe{What language should we use for the JVM?}{resources/Language.pdf}
+\pictureframe{Can we reuse the java compiler for this
+language?}{resources/Compiler.pdf}
+
+\section{A History Lesson}
 
 \part[Introducing Scala]{Introducing Scala}
 \part[Programming Paradigms]{Programming Paradigms}
