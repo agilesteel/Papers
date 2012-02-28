@@ -9,8 +9,22 @@
 \beamertemplatenavigationsymbolsempty
 
 \usepackage{graphicx}
-\usepackage{tikz}
-\usetikzlibrary{arrows,shapes,trees}
+
+\newcommand{\pictureFrame}[2]{
+\begin{frame}{#1}
+\begin{center}
+\includegraphics[scale=0.45]{#2}
+\end{center}
+\end{frame}
+}
+
+\newcommand{\highlight}[1]{
+\textcolor{blue}{#1}
+}
+
+\newcommand{\link}[2]{
+\href{#1}{\textcolor{blue}{\underline{\emph{#2}}}}
+}
 
 \usepackage{listings} % Sourcecode syntax highlighting
 \renewcommand\lstlistlistingname{List of Listings}

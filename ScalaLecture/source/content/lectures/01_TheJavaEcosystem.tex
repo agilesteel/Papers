@@ -24,10 +24,63 @@ Write Once, Run Anywhere.
 \end{block}
 \end{frame}
 
-\begin{frame}{Let's take a look under the hood}
-\begin{center}
-\includegraphics[scale=0.45]{resources/PlatformDependency.pdf}
-\end{center}
+\pictureFrame{Problem - Unmanaged code}{resources/PlatformDependency.pdf}
+
+\pictureFrame{Solution - Managed code}{resources/PlatformIndependency.pdf}
+
+\begin{frame}{Virtual Machines}
+\begin{block}{Operating System}
+An operating system is an abstraction over a hardware \highlight{machine}.
+\end{block}
+\begin{block}{Virtual Machine}
+A \highlight{virtual} machine is an abstraction over an operating system.
+\end{block}
+\begin{exampleblock}{Known VMs}
+\begin{description}
+  \item[Java] Java Virtual Machine (JVM)
+  \item[.Net] Common Language Infrustructure (CLI)
+  \item[Android] Dalvik virtual machine
+  \item
+  and\link{http://www.en.wikipedia.org/wiki/Virtual_machine\#List_of_virtual_machine_software}{many more}
+\end{description}
+\end{exampleblock}
+\end{frame}
+
+\begin{frame}{Managed Programming Languages}
+\begin{block}{Java - runs everywhere}
+\begin{description}
+	\item[\link{http://en.wikipedia.org/wiki/Java_\%28programming_language\%29}{Java}]
+	Statically typed OO language
+	\item[\link{http://en.wikipedia.org/wiki/Scala_programming_language}{Scala}]
+	Statically typed OO \& FP language
+	\item[\link{http://en.wikipedia.org/wiki/Clojure}{Clojure}] Dynamically
+	typed FP language
+	(\link{http://en.wikipedia.org/wiki/Lisp_\%28programming_language\%29}{Lisp}dialect)
+	\item[\link{http://en.wikipedia.org/wiki/Groovy_\%28programming_language\%29}{Groovy}]
+	Dynamically typed scripting language
+	\item and\link{http://en.wikipedia.org/wiki/List_of_JVM_languages}{many
+	more}
+\end{description}
+\end{block}
+\begin{block}{.Net - runs only on windows}
+\begin{description}
+	\item[\link{http://en.wikipedia.org/wiki/C_Sharp_\%28programming_language\%29}{C\#}]
+	Statically typed OO \& FP language
+	\item[\link{http://en.wikipedia.org/wiki/Visual_Basic_.NET}{VB}] Statically
+	typed OO language
+	\item[\link{http://en.wikipedia.org/wiki/F_Sharp_\%28programming_language\%29}{F\#}]
+	Statically typed FP language
+	\item
+	and\link{http://en.wikipedia.org/wiki/List_of_CLI_languages\#CLI_languages}{many more}
+\end{description}
+\end{block}
+\end{frame}
+
+\begin{frame}{Managed Programming Languages 2}
+\begin{block}{Android}
+Java is officially supported. Every JVM language should theoretically work.\highlight{Scala}
+works.\link{http://stackoverflow.com/questions/1994703/which-programming-languages-can-i-use-on-android-dalvik}{Few others} work as-well.
+\end{block}
 \end{frame}
 
 \part[Introducing Scala]{Introducing Scala}
