@@ -1,5 +1,147 @@
 \part[Introducing Scala]{Introducing Scala}
-\section{Reading Scala}
-\begin{frame}{Reading Scala}
+\section{Scalable Language}
+\begin{frame}{Scalable Language}
+\begin{center}
+\includegraphics{resources/Scala.jpg}
+\end{center}
+\begin{center}
+Scala stands for ``\highlight{sca}lable \highlight{la}nguage''.\\
+Scala translates from Latin to English as ``\highlight{stairs}''.\\
+Scala's logo shows a circular staircase.
+\end{center}
+\end{frame}
+
+\begin{frame}{Scalable Language}
+Scala is scalable in a sense of:
+\begin{description}
+  \item[Syntax:] growing with the demands of its users
+  \item[FP:] hacking small scripts
+  \item[OO:] developing enterprise applications
+\end{description}
+\end{frame}
+
+\begin{frame}[fragile]{Growing the Language}
+If you were in need of a \lstinline!type! of \lstinline!Polynomial! in Java you
+would write it yourself and end up with something like this:
+\begin{exampleblock}{Java}
+\begin{lstlisting}[language=java]
+Polynomial sum = firstPolynomial.plus(secondPolynomial)
+\end{lstlisting}
+\end{exampleblock}
+In Scala the code would look like this:
+\begin{exampleblock}{Scala}
+\begin{lstlisting}
+val sum = firstPolynomial + secondPolynomial
+\end{lstlisting}
+\end{exampleblock}
+Your library would feel as if it was in the language from the beginning.
+\end{frame}
+
+\begin{frame}[fragile]{Small Scripts}
+\begin{exampleblock}{Run scripts on windows (Paste this into a \highlight{.bat}
+or \highlight{.cmd} file)}
+\begin{verbatim}
+::#! 
+@echo off 
+call scala \%0 \%* 
+goto: eof 
+::!#
+\end{verbatim}
+\lstinline!// The script starts here!
+\end{exampleblock}
+\begin{exampleblock}{Run scripts on unix}
+\begin{verbatim}
+#!/bin/sh
+exec scala "$0" "$@"
+!#
+\end{verbatim}
+\lstinline!// The script starts here!
+\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Small Scripts}
+\begin{exampleblock}{Get title of the Scala page on wiki}
+\begin{lstlisting}
+def title = xmlTitle.text
+def xmlTitle = scala.xml.XML loadString stringTitle.get
+def stringTitle = lines find { _ startsWith "<title>" }
+def lines = io.Source.fromURL(url).getLines
+def url = wiki + scalaLang
+def wiki = "http://en.wikipedia.org/wiki/"
+def scalaLang = "Scala_(programming_language)"
+
+println(title) // Scripts must end with an expression
+\end{lstlisting}
+\end{exampleblock}
+\end{frame}
+
+\pictureframe{Enterprise applications}{resources/ScalaIndustry.pdf}
+
+\section{Syntax}
+\begin{frame}[fragile]{Reading Scala}
+\begin{block}{The types are specified next to an identifier separated by a colon}
+\begin{tabular}{l|l}
+\textsc{Scala} & \textsc{Java}\\
+\hline
+\lstinline!x: Int! & \lstinline!int x!\\
+\lstinline!getBeerPrice(): Int! & \lstinline!int getBeerPrice()!\\
+\lstinline!setBeerPrice(price: Int): Unit! & \lstinline!void setBeerPrice(int price)!\\
+\end{tabular}
+\end{block}
+\begin{block}{Only 3 keywords to remember and you are ready to go}
+\begin{tabular}{ll}
+\lstinline!var! & declares a variable\\
+\lstinline!val! & declares a value (immutable variable)\\
+\lstinline!def! & defines a function \\
+\end{tabular}
+\end{block}
+\end{frame}
+
+\begin{frame}[fragile]{Reading Scala}
+\begin{exampleblock}{First Acquaintance}
+\begin{lstlisting}
+scala> val pi: Double = 3.14;
+pi: Double = 3.14  // interpreter response
+
+scala> def calculateCircumference(r: Int):Double = {
+     |   return 2 * pi * r;
+     | }
+calculateCircumference: (r: Int)Double // interpreter response
+
+scala> var circ: Double = calculateCircumference(10);
+circ: Double = 62.800000000000004 // interpreter response
+\end{lstlisting}
+\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Writing Scala}
+\begin{exampleblock}{Second opinion}
+\begin{lstlisting}
+val pi = 3.14
+def calculateCircumference(r: Int) = 2 * pi * r
+var circ = calculateCircumference(10)
+\end{lstlisting}
+\end{exampleblock}
+\begin{itemize}
+  \item semicolons are inferred
+  \item most types are inferred
+  \item last expression is implicitly returned
+  \item single expression in the body means no need for curly braces
+\end{itemize}
+\end{frame}
+
+\begin{frame}{What does ``static typing'' mean?}
+
+\end{frame}
+
+\begin{frame}{What does ``immutable'' stand for?}
+
+\end{frame}
+
+\begin{frame}{``Everything'' is an expression}
+
+\end{frame}
+
+\begin{frame}{What is not an expression?}
 
 \end{frame}
