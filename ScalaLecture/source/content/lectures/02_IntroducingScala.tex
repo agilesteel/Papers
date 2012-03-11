@@ -38,8 +38,8 @@ Your library would feel as if it was in the language from the beginning.
 \end{frame}
 
 \begin{frame}[fragile]{Small Scripts}
-\begin{exampleblock}{Run scripts on windows (Paste this into a \highlight{.bat}
-or \highlight{.cmd} file)}
+\begin{exampleblock}{Run scripts on windows (Paste this into a \emph{.bat}
+or \emph{.cmd} file)}
 \begin{verbatim}
 ::#! 
 @echo off 
@@ -88,6 +88,7 @@ println(title) // Scripts must end with an expression
 \lstinline!setBeerPrice(price: Int): Unit! & \lstinline!void setBeerPrice(int price)!\\
 \end{tabular}
 \end{block}
+\pause
 \begin{block}{Only 3 keywords to remember and you are ready to go}
 \begin{tabular}{ll}
 \lstinline!var! & declares a variable\\
@@ -103,7 +104,7 @@ println(title) // Scripts must end with an expression
 scala> val pi: Double = 3.14;
 pi: Double = 3.14  // interpreter response
 
-scala> def calculateCircumference(r: Int):Double = {
+scala> def calculateCircumference(r: Int): Double = {
      |   return 2 * pi * r;
      | }
 calculateCircumference: (r: Int)Double // interpreter response
@@ -130,12 +131,203 @@ var circ = calculateCircumference(10)
 \end{itemize}
 \end{frame}
 
-\begin{frame}{What does ``static typing'' mean?}
-
+\begin{frame}{Type Systems}
+\begin{block}{What is a type system?}
+\pause
+Type system = \highlight{Proof} system.\\
+The type checker \highlight{verifies} proofs.
+\end{block}
+\pause
+\begin{block}{What does ``static typing'' mean?}
+\pause
+The types are verified at \highlight{compile time}.
+\end{block}
+\pause
+\begin{block}{What does ``dynamic typing'' mean?}
+\pause
+The types are verified at \highlight{runtime}.
+\end{block}
 \end{frame}
 
-\begin{frame}{What does ``immutable'' stand for?}
+\begin{frame}{Two Principles of Type Theory}
+\begin{block}{Progress}
+If a term is well-typed it either evaluates or is already a value.
+\end{block}
+\pause
+\center{\highlight{Progress} is the connection between the static typing and the
+runtime.}
+\pause
+\begin{block}{Preservation}
+If a term is well-typed and it evaluates, the result has the same type.
+\end{block}
+\begin{center}
+\pause
+Types \alert{never} change!
+\end{center}
+\end{frame}
 
+\begin{frame}[fragile]{Two Principles of Type Theory}
+\begin{exampleblock}{Example}
+\begin{center}
+\begin{tabular}{l|l}
+\hline
+\lstinline!name.length()! & expression\\
+\hline
+Has type: \lstinline!Int! & preservation\\
+Is value? \lstinline!false! & progress\\
+\hline
+\hline
+\pause
+\lstinline!"Vlad".length()! & expression\\
+\hline
+Has type: \lstinline!Int! & preservation\\
+Is value? \lstinline!false! & progress\\
+\hline
+\hline
+\pause
+\lstinline!4! & literal\\
+\hline
+Has type: \lstinline!Int! & preservation\\
+Is value? \lstinline!true! &  progress\\
+\hline
+\end{tabular}
+\end{center}
+\end{exampleblock}
+\end{frame}
+
+\begin{frame}{Type Inference}
+\begin{block}{Where do types come from?}
+\alert{Nothing} in the type theory forces the typing to be
+\highlight{explicit}! Types come from the compiler and only the compiler cares
+about them. Programmers care only about the runtime.
+\end{block}
+\pause
+\begin{block}{What is type inference?}
+Type inference is the act of type \highlight{reconstruction} in order to
+verify, that your program is well-typed. Type reconstruction is compiler's job,
+\alert{not} yours!
+\end{block}
+\end{frame}
+
+\begin{frame}[fragile]{Type Inference}
+\begin{block}{What is \emph{local} type inference?}
+Type inference narrowed down to small chunks of code. E.g. declarations.
+\end{block}
+\pause
+\begin{exampleblock}{Local type inference in Scala}
+\begin{lstlisting}
+def foo() = {
+   val name = "Vlad"
+   val length = name.length()
+   println(length)
+}
+\end{lstlisting}
+\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Type Inference}
+\begin{alertblock}{Local type inference in Scala}
+\begin{lstlisting}
+def add5(x) = x + 5
+\end{lstlisting}
+\end{alertblock}
+\pause
+\lstinline!x! is a formal parameter. There is no right hand side to the
+declaration. It is virtually impossible to examine the whole code base for the
+callers of \lstinline!add5! in order to infer the type of \lstinline!x!.
+\pause
+\begin{exampleblock}{Local type inference in Scala}
+\begin{lstlisting}
+def add5(x: Int) = x + 5
+\end{lstlisting}
+\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Type Inference}
+\begin{alertblock}{Local type inference in Scala}
+\begin{lstlisting}
+def factorial(x: Int) = {
+   if (x <= 1) 1
+   else x * factorial(x - 1)
+}
+\end{lstlisting}
+\end{alertblock}
+\pause
+\begin{exampleblock}{Local type inference in Scala}
+\begin{lstlisting}
+def factorial(x: Int): Int = {
+   if (x <= 1) 1
+   else x * factorial(x - 1)
+}
+\end{lstlisting}
+\end{exampleblock}
+\end{frame}
+
+\begin{frame}{Type Inference}
+\begin{center}
+\highlight{JVM} has its own type system.\\
+Scala's type system has to be \highlight{conform} to JVM's type system.\\
+Scala has \highlight{local} type inference.\\
+Scala \alert{cannot have} \highlight{global} type inference, because of the way
+JVM's type system works. (JVM has a \alert{nominal} type system. A \emph{structural} type system
+is required for global type inference.)
+\end{center}
+\end{frame}
+
+\begin{frame}[fragile]{Immutability}
+\begin{block}{What does ``immutable'' stand for?}
+Immutability is just another word for preservation. Immutability can be applied
+in different contexts.
+\end{block}
+\pause
+\begin{center}
+\lstinline!val name = "Vlad"!
+\end{center}
+\pause
+\begin{block}{Contexts of immutability}
+The \highlight{type} \lstinline!String! is immutable.\\
+\begin{itemize}
+\item \lstinline!name! will always point to a \lstinline!String!
+\item \lstinline!"Vlad"! will always be a \lstinline!String!
+\end{itemize}
+\pause
+The value of the \highlight{reference} is immutable\\
+(\lstinline!name! will always point to \lstinline!"Vlad"!)\\
+\pause
+The value of the \highlight{object} is immutable\\
+(\lstinline!"Vlad"! will always be \lstinline!"Vlad"!)
+\end{block}
+\end{frame}
+
+\begin{frame}[fragile]{Mutability}
+\begin{center}
+\lstinline!var person = new Person("Vlad")!
+\end{center}
+\pause
+\begin{block}{Contexts of mutability}
+The \highlight{type} \lstinline!Person! is still \alert{im}mutable\\
+\begin{itemize}
+\item \lstinline!person! will always point to a \lstinline!Person!
+\item \lstinline!Person("Vlad")! will always be a \lstinline!Person!
+\end{itemize}
+\pause
+The value of the \highlight{reference} is \highlight{mutable}\\
+(\lstinline!person! might point to \alert{another} person someday)\\
+\pause
+The value of the \highlight{object} is \highlight{mutable}\\
+(\lstinline!Person("Vlad")! might \alert{change internally})\\
+\pause
+The \alert{type} of the \highlight{object} might \alert{change}!\\
+(\lstinline!Person("Vlad")! might be casted to \lstinline!Parent("Vlad")!)
+\end{block}
+\end{frame}
+
+\begin{frame}{Immutability vs. Mutability}
+\begin{center}
+Avoid mutability at all cost, but do not demonize it!\\
+For now this means only one thing: Try to use \lstinline!val! instead of
+\lstinline!var!.
+\end{center}
 \end{frame}
 
 \begin{frame}{``Everything'' is an expression}
