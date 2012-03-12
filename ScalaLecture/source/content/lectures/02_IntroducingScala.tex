@@ -60,7 +60,7 @@ exec scala "$0" "$@"
 \end{frame}
 
 \begin{frame}[fragile]{Small Scripts}
-\begin{exampleblock}{Get title of the Scala page on wiki}
+\begin{exampleblock}{Get title of the Scala page from Wikipedia}
 \begin{lstlisting}
 def title = xmlTitle.text
 def xmlTitle = scala.xml.XML loadString stringTitle.get
@@ -71,6 +71,7 @@ def wiki = "http://en.wikipedia.org/wiki/"
 def scalaLang = "Scala_(programming_language)"
 
 println(title) // Scripts must end with an expression
+//Scala (programming language) - Wikipedia, the free encyclopedia
 \end{lstlisting}
 \end{exampleblock}
 \end{frame}
@@ -269,14 +270,14 @@ def factorial(x: Int): Int = {
 Scala's type system has to be \highlight{conform} to JVM's type system.\\
 Scala has \highlight{local} type inference.\\
 Scala \alert{cannot have} \highlight{global} type inference, because of the way
-JVM's type system works. (JVM has a \alert{nominal} type system. A \emph{structural} type system
-is required for global type inference.)
+JVM's type system works. (JVM has a \alert{nominal} type system. A
+\highlight{structural} type system is required for global type inference.)
 \end{center}
 \end{frame}
 
 \begin{frame}[fragile]{Immutability}
 \begin{block}{What does ``immutable'' stand for?}
-Immutability is just another word for preservation. Immutability can be applied
+Immutability is just another word for preservation. Immutability presents itself
 in different contexts.
 \end{block}
 \pause
@@ -330,10 +331,245 @@ For now this means only one thing: Try to use \lstinline!val! instead of
 \end{center}
 \end{frame}
 
-\begin{frame}{``Everything'' is an expression}
-
+\begin{frame}[fragile]{Everything is an expression}
+\begin{block}{What is an expression?}
+Expression is a combination of values, which require at least one step to
+compute. Expressions \highlight{always produce a value}. A value
+\highlight{always has a type}.
+\end{block}
+\onslide<4->
+\begin{center}
+\lstinline!Null! and \lstinline!Unit! are \highlight{types} in Scala,
+\alert{not} keywords!
+\end{center}
+\onslide<2->
+\begin{exampleblock}{Simple expressions}
+\begin{center}
+\begin{tabular}{l|l}
+\hline
+\textsc{Expression} & \textsc{Evaluates to}\\
+\hline
+\lstinline!5! & \lstinline!5!\\
+\hline
+\lstinline!5 + 2! & \lstinline!7!\\
+\hline
+\lstinline!true! & \lstinline!true!\\
+\hline
+\lstinline!true || false! & \lstinline!true!\\
+\hline
+\lstinline!null! & \lstinline!null: Null!\\
+\hline
+\lstinline!getBeer(10)! & \lstinline!Beer(Becks)!\\
+\hline
+\lstinline!println()! & \onslide<2-> \alt<3->{\lstinline!(): Unit!}{???}\\
+\hline
+\end{tabular}
+\end{center}
+\end{exampleblock}
 \end{frame}
 
-\begin{frame}{What is not an expression?}
+\begin{frame}[fragile]{Everything is an expression}
+\begin{block}{What is a complex expression?}
+A complex expression is an expression, which has to be surrounded with curly
+braces \lstinline!{}!, \highlight{when combined} with other expressions.
+\end{block}
+\onslide<2->
+\begin{exampleblock}{Complex expressions}
+\begin{center}
+\begin{tabular}{l|l}
+\hline
+\textsc{Expression} & \textsc{Evaluates to}\\
+\hline
+\lstinline!x = 4711! & \lstinline!()!\\
+\hline
+\lstinline!val x = 4711! & \lstinline!()!\\
+\hline
+\lstinline!while(false){}! & \lstinline!()!\\
+\hline
+\lstinline!for(i <- 1 to 3) yield i! & \lstinline!Vector(1,2,3)!\\
+\hline
+\lstinline!if(3 < 5) 3 else 5! & \lstinline!3!\\
+\hline
+\begin{lstlisting}
+4711 match {
+   case 3 => true
+   case sthElse => false
+}
+\end{lstlisting} & \lstinline!false!\\
+\hline
+\end{tabular}
+\end{center}
+\end{exampleblock}
+\end{frame}
 
+\begin{frame}[fragile]{Everything is an expression}
+\begin{exampleblock}{Stand-alone complex expression }
+\begin{lstlisting}
+scala> val max = if (3 > 5) 3 else 5
+max: Int = 5
+\end{lstlisting}
+\end{exampleblock}
+\pause
+\begin{alertblock}{Combined complex expressions}
+\begin{lstlisting}
+scala> val maxPlusOne = 1 + if (3 > 5) 3 else 5
+<console>:1: error: illegal start of simple expression
+       val maxPlusOne = 1 + if (3 > 5) 3 else 5
+                            ^
+
+scala> val maxPlusOne = if (3 > 5) 3 else 5 + 1
+maxPlusOne: Int = 6 // result is not always correct
+\end{lstlisting}
+\end{alertblock}
+\end{frame}
+\begin{frame}[fragile]{Everything is an expression}
+\begin{exampleblock}{\alert{Avoid} complex expression chaining!}
+\begin{lstlisting}
+scala> val maxPlusOne = 1 + { if (3 > 5) 3 else 5 }
+maxPlusOne: Int = 6
+
+scala> val maxPlusOne = { if (3 > 5) 3 else 5 } + 1
+maxPlusOne: Int = 6
+\end{lstlisting}
+\end{exampleblock}
+\pause
+\begin{exampleblock}{\emph{Refactor} complex expressions into small methods.}
+\begin{lstlisting}
+def max(x: Int, y: Int) = if (x > y) x else y
+val maxPlusOne = 1 + max(3, 5)
+val maxPlusOne = max(3, 5) + 1
+\end{lstlisting}
+\end{exampleblock}
+\end{frame}
+
+\pictureframe{Functions}{resources/Functions.pdf}
+
+\begin{frame}[fragile]{Functions}
+\begin{alertblock}{Nesting functions}
+\begin{lstlisting}
+def dog(name: String, size: Int) { // no equals sign
+  require(name != null)
+  require(size > 0 && size <= 100)
+  bark() // should be the last expression
+
+  def bark() { // no equals sign
+    def noise =
+      if (size < 20) "yip"
+      else if (size < 40) "arf"
+      else if (size < 60) "bow-wow"
+      else "ruff"
+        
+    println(noise)
+  }
+}
+\end{lstlisting}
+\end{alertblock}
+\end{frame}
+
+\begin{frame}[fragile]{Functions}
+\begin{exampleblock}{Nesting functions}
+\begin{lstlisting}
+def dog(name: String, size: Int) = {
+  require(name != null)
+  require(size > 0 && size <= 100)
+  def bark() = {
+    def noise =
+      if (size < 20) "yip"
+      else if (size < 40) "arf"
+      else if (size < 60) "bow-wow"
+      else "ruff"
+        
+    println(noise)
+  }
+  
+  bark()
+}
+\end{lstlisting}
+\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Classes are where large functions go to hide}
+\begin{lstlisting}
+class Dog(val name: String, _size: Int) {
+  require(name != null)
+  size = _size
+
+  private[this] var s: Int = _
+  def size = s
+  def size_=(value: Int) {
+    require(value > 0 && value <= 100)
+    s = value
+  }
+
+  def bark() = ...
+  
+  override def toString = name + " " + size
+}
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]{Properties in Java}
+\begin{lstlisting}[language=java]
+public class Property {
+   private int size = 0;
+
+   public int size() {
+      return size;
+   }
+
+   public void size(int size) {
+      this.size = size;
+   }
+}
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]{Properties in Scala}
+\begin{lstlisting}
+class ImplicitProperty {
+   var size: Int = _
+}
+
+class ExplicitProperty {
+   private[this] var s: Int = _
+   def size = s	
+   def size_=(x: Int) = {
+      s = x
+   }
+}
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]{Underscore}
+\begin{block}{What does the underscore do?}
+The underscore stands mostly for \highlight{something unknown} or something,
+that does \highlight{not} need to be \highlight{referred to} by name in Scala
+and is widely used all over the language.
+\end{block}
+\begin{lstlisting}
+//Scala on the left     | Pseudo Java on the right
+var size = 0            | public int size = 0
+var size: Int = _       | public int size = 0
+var size: Int           | public abstract int size
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]{Uniform Access Principle}
+\emph{``All services offered by a module should be available through a uniform
+notation, which does not betray whether they are implemented through storage or
+through computation.''} - Bertrand Meyer
+\pause
+\begin{exampleblock}{Uniform Access Principle}
+\begin{lstlisting}
+// This is Java
+String[] words = { "hello", "world" };
+for (int i = 0; i < words.length; i++) // field access
+   System.out.println(words[i].length()); // method access
+
+// This is Scala
+val words = Array("hello", "world")
+for (i <- 0 until words.length) // member access
+   println(words(i).length) // member access
+\end{lstlisting}
+\end{exampleblock}
 \end{frame}
