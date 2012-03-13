@@ -28,6 +28,7 @@ would write it yourself and end up with something like this:
 Polynomial sum = firstPolynomial.plus(secondPolynomial)
 \end{lstlisting}
 \end{exampleblock}
+\pause
 In Scala the code would look like this:
 \begin{exampleblock}{Scala}
 \begin{lstlisting}
@@ -124,6 +125,7 @@ def calculateCircumference(r: Int) = 2 * pi * r
 var circ = calculateCircumference(10)
 \end{lstlisting}
 \end{exampleblock}
+\pause
 \begin{itemize}
   \item semicolons are inferred
   \item most types are inferred
@@ -558,6 +560,14 @@ var size: Int           | public abstract int size
 \emph{``All services offered by a module should be available through a uniform
 notation, which does not betray whether they are implemented through storage or
 through computation.''} - Bertrand Meyer
+\end{frame}
+
+\begin{frame}[fragile]{Rules for the Uniform Access Principle in Scala}
+\begin{block}{Rule 1}
+If a method does not require any parameters, it can be called \highlight{without
+parenthesis} and it might be defined with \highlight{no parameter list} at
+all.
+\end{block}
 \pause
 \begin{exampleblock}{Uniform Access Principle}
 \begin{lstlisting}
@@ -565,11 +575,83 @@ through computation.''} - Bertrand Meyer
 String[] words = { "hello", "world" };
 for (int i = 0; i < words.length; i++) // field access
    System.out.println(words[i].length()); // method access
-
+\end{lstlisting}
+\pause
+\begin{lstlisting}
 // This is Scala
 val words = Array("hello", "world")
 for (i <- 0 until words.length) // member access
    println(words(i).length) // member access
 \end{lstlisting}
 \end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Rules for the Uniform Access Principle in Scala}
+\begin{block}{Rule 2}
+If a method is \highlight{defined without a parameter list}, it \alert{cannot}
+be \highlight{called with an empty parameter list}.
+\end{block}
+\pause
+\begin{alertblock}{No parameter list at definition means no parameter list at
+call site}
+\begin{lstlisting}
+def method = 4711
+def callMethod = method() // will not compile
+\end{lstlisting}
+\end{alertblock}
+\pause
+\begin{block}{Realisation}
+A \lstinline!def! can be \highlight{overridden} with a \lstinline!val!
+\end{block}
+\end{frame}
+
+\begin{frame}[fragile]{Rules for the Uniform Access Principle in Scala}
+\begin{block}{Rule 3 - Convention}
+If a method \alert{has} \highlight{side effects} it \alert{should} be
+defined \alert{and} called \highlight{with} an empty parameter list or empty
+parenthesis respectively.
+\end{block}
+\pause
+\begin{exampleblock}{Definition and Call with empty parenthesis}
+\begin{lstlisting}
+// Definition
+var x = 10
+def incrementX() = {
+   x = x + 1
+}
+
+// Call
+incrementX() // empty parenthesis
+\end{lstlisting}
+\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Rules for the Uniform Access Principle in Scala}
+\begin{block}{Rule 4 - Convention}
+If a method \alert{does not have} \highlight{side effects} it \alert{should not}
+be defined \highlight{without} an empty parameter list.
+\end{block}
+\pause
+\begin{exampleblock}{Definition and Call without empty parenthesis}
+\begin{lstlisting}
+// Definition
+var x = 10
+def incrementedX = x + 1
+
+// Call
+val newX = incrementedX // no empty parenthesis
+\end{lstlisting}
+\end{exampleblock}
+\end{frame}
+
+\begin{frame}{Summary}
+\begin{itemize}
+  \item Scala is a \highlight{scalable language}.
+  \item Scala has a \highlight{strong type system}.
+  \item Scala has \highlight{local type inference}.
+  \item Prefer \lstinline!val! over \lstinline!var!.
+  \item ``Everything'' is an \highlight{expression} in Scala.
+  \item ``Every'' \highlight{container} in Scala is \highlight{nestable}.
+  \item Scala respects the \highlight{Uniform Access Principle}.
+\end{itemize}
 \end{frame}
