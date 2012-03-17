@@ -1,0 +1,201 @@
+\part[The Scala Ecosystem]{The Scala Ecosystem}
+\section{The Web}
+\begin{frame}{Official Scala Website}
+\begin{center}
+\link{http://www.scala-lang.org/}{http://www.scala-lang.org/}
+\end{center}
+Stuff you find there:
+\begin{itemize}
+  \item Scala download link
+  \item Documentation
+  \item Guides
+  \item Support information
+  \item News
+  \item and so on\ldots
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Official Industry-oriented Website}
+\begin{center}
+\link{http://www.typesafe.com/}{http://www.typesafe.com/}
+\end{center}
+Typesafe is a combination of:
+\begin{description}
+\item[\link{http://www.scala-lang.org/}{Scala}] programming language
+\item[\link{http://akka.io/}{Akka}] event-driven middleware
+\item[\link{http://www.playframework.org/}{Play!}] web framework
+\end{description}
+\pause
+Typesafe provides \link{http://www.typesafe.com/stack}{The Typesafe Stack}:
+\begin{itemize}
+\item Scala, Akka, Play!
+\item Simple Build Tool (\link{http://www.scala-sbt.org/}{SBT})
+\item \link{https://github.com/n8han/giter8}{giter8} (a command line tool to
+apply templates defined on github)
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Official Community-driven Documentation Website}
+\begin{center}
+\link{http://docs.scala-lang.org/}{http://docs.scala-lang.org/}
+\end{center}
+Stuff you find there:
+\begin{itemize}
+  \item Guides
+  \item Tutorials
+  \item Glossary
+  \item Cheat sheets
+  \item Scala Improvement Process
+  \item \link{http://docs.scala-lang.org/style/}{Style Guide}
+  \item and so on\ldots
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Scala Wiki}
+\begin{center}
+\link{https://wiki.scala-lang.org}{https://wiki.scala-lang.org}
+\end{center}
+Stuff you find there:
+\begin{itemize}
+  \item \link{https://wiki.scala-lang.org/display/SW/Tools+and+Libraries}{Tools
+  and Libraries}
+  \item Twitter links
+  \item User Groups
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Stack Overflow}
+\begin{center}
+\link{http://stackoverflow.com}{http://stackoverflow.com}
+\end{center}
+Stack Overflow is a question \& answer site about programming questions.\\
+Stuff you find / can do there:
+\begin{itemize}
+  \item \link{http://stackoverflow.com/tags/scala/info}{Stack Overflow Scala Tutorial!}
+  \item search for questions
+  \item ask questions
+  \item answer questions ;)
+  \item follow topics of interest
+  \item earn reputation
+\end{itemize}
+\end{frame}
+
+\pictureframe{Scala on Stack Overflow and Github}{resources/SOGithub.pdf}
+
+\begin{frame}{Symbol Hound}
+\begin{center}
+\link{http://symbolhound.com/}{http://symbolhound.com/}
+\end{center}
+\begin{center}
+\emph{Symbol Hound} is a search engine for symbols.\\
+Scala has lots of symbols.\\
+Very \highlight{few} of them are language \highlight{keywords}.
+\end{center}
+\end{frame}
+
+\begin{frame}{Simply Scala}
+\begin{center}
+\link{http://www.simplyscala.com/}{http://www.simplyscala.com/}
+\end{center}
+\begin{center}
+\emph{Simply Scala} is an \highlight{interactive} Scala tutorial.
+\end{center}
+\end{frame}
+
+\section{IDEs}
+\begin{frame}{The old school way}
+This is how you get the ``stand-alone'' Scala edition:
+\begin{enumerate}
+  \item Go to
+  \link{http://www.scala-lang.org/downloads}{http://www.scala-lang.org/downloads}
+  \item Download one of the \highlight{Stable} Releases
+  \item Extract the files from the archive
+  \item Manually adjust the environment variable for the \highlight{Path} to
+  point to the \highlight{ScalaHomeDirectory/bin} folder
+\end{enumerate}
+\end{frame}
+
+\begin{frame}{The old school way}
+This is what you get from the ``stand-alone'' Scala edition:
+\begin{description}
+  \item[scala] Scala's interactive shell (REPL)
+  \item[scalac] The Scala compiler
+  \item[fsc] The Fast Scala compiler (scalac, which always runs as a daemon in
+  the background)
+  \item[sbaz] The Scala Bazar (a small console application, which provides
+  access to main Scala repositories)
+\end{description}
+\begin{center}
+Start the terminal and type ``\highlight{sbaz help}'' to get started
+\end{center}
+\end{frame}
+
+\begin{frame}{The eclipse Scala plugin}
+\begin{center}
+\link{http://scala-ide.org/}{http://scala-ide.org/}
+\end{center}
+\begin{center}
+An extra Scala installation is \highlight{not} required for the Scala
+plugin for eclipse to work!
+\end{center}
+The plugin gives you:
+\begin{enumerate}
+  \item Support for Mixed Scala/Java Projects
+  \item Scala perspective
+  \item Scala compiler
+  \item Scala REPL, which runs inside of Eclipse
+  \item Scala debugger
+\end{enumerate}
+\end{frame}
+
+\begin{frame}{The IntelliJ IDEA Scala plugin}
+\begin{center}
+\link{http://blog.jetbrains.com/scala/}{http://blog.jetbrains.com/scala/}
+\end{center}
+\begin{center}
+An extra Scala installation \alert{is} required for the Scala
+plugin for IntelliJ IDEA to work!
+\end{center}
+\begin{center}
+Get started \link{http://confluence.jetbrains.net/display/SCA/Getting+Started+with+IntelliJ+IDEA+Scala+Plugin}{here}
+\end{center}
+\end{frame}
+
+\begin{frame}{Simple Build Tool}
+\begin{center}
+\link{http://www.scala-sbt.org/}{http://www.scala-sbt.org/}
+\end{center}
+\begin{center}
+Get started
+\link{https://github.com/harrah/xsbt/wiki/Getting-Started-Setup}{here}
+\end{center}
+SBT gives you:
+\begin{enumerate}
+  \item Scala REPL
+  \item Scala-scripted configuration luxury
+  \item \highlight{Continous incremental compilation}
+  \item Out of the box testing with Scala test frameworks
+  \item Concise dependency management DSL
+  \item and \link{http://www.scala-sbt.org/}{further benefits}
+\end{enumerate}
+\end{frame}
+
+\begin{frame}{The Typesafe Stack}
+\begin{center}
+\link{http://www.typesafe.com/stack/download}{http://www.typesafe.com/stack/download}
+\end{center}
+\begin{center}
+Get started \link{http://www.typesafe.com/resources/getting-started/}{here}
+\end{center}
+\end{frame}
+
+\begin{frame}{Recommended setup}
+\begin{enumerate}
+  \item Install the JVM
+  \item Install eclipse
+  \item Install the scala plugin for eclipse
+  \item Install the typesafe stack
+\end{enumerate}
+The only reason to install the stand-alone Scala edition is the REPL, but the
+REPL can be accessed from either eclipse or sbt, which is more than enough.
+\end{frame}
