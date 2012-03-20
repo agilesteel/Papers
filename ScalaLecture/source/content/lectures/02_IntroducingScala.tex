@@ -157,8 +157,10 @@ The types are verified at \highlight{runtime}.
 If a term is well-typed it either evaluates or is already a value.
 \end{block}
 \pause
-\center{\highlight{Progress} is the connection between the static typing and the
-runtime.}
+\begin{center}
+Progress is the \highlight{connection} between the static typing and the
+runtime.
+\end{center}
 \pause
 \begin{block}{Preservation}
 If a term is well-typed and it evaluates, the result has the same type.
@@ -267,14 +269,14 @@ def factorial(x: Int): Int = {
 \end{frame}
 
 \begin{frame}{Type Inference}
-\begin{center}
-\highlight{JVM} has its own type system.\\
-Scala's type system has to be \highlight{conform} to JVM's type system.\\
-Scala has \highlight{local} type inference.\\
-Scala \alert{cannot have} \highlight{global} type inference, because of the way
-JVM's type system works. (JVM has a \alert{nominal} type system. A
+\begin{itemize}
+\item \highlight{JVM} has its own type system.
+\item Scala's type system has to be \highlight{conform} to JVM's type system.
+\item Scala has \highlight{local} type inference.
+\item Scala \alert{cannot have} \highlight{global} type inference, because of
+the way JVM's type system works. (JVM has a \alert{nominal} type system. A
 \highlight{structural} type system is required for global type inference.)
-\end{center}
+\end{itemize}
 \begin{center}
 Watch \link{http://screencasts.chariotsolutions.com/webpage/2011/10}{this
 fascinating video} by Daniel Spiewak
@@ -328,6 +330,10 @@ The value of the \highlight{object} is \highlight{mutable}\\
 The \alert{type} of the \highlight{object} might \alert{change}!\\
 (\lstinline!Person("Vlad")! might be casted to \lstinline!Parent("Vlad")!)
 \end{block}
+\pause
+\begin{center}
+\alert{Type casts cannot be verified by the type checker!}
+\end{center}
 \end{frame}
 
 \begin{frame}{Immutability vs. Mutability}
@@ -346,8 +352,8 @@ compute. Expressions \highlight{always produce a value}. A value
 \end{block}
 \onslide<4->
 \begin{center}
-\lstinline!Null! and \lstinline!Unit! are \highlight{types} in Scala,
-\alert{not} keywords!
+\lstinline!Null! and \lstinline!Unit! are \highlight{types}; \lstinline!null!
+and \lstinline!()! are \highlight{values} in Scala, \alert{not} keywords.
 \end{center}
 \onslide<2->
 \begin{exampleblock}{Simple expressions}
@@ -423,7 +429,9 @@ scala> val maxPlusOne = 1 + if (3 > 5) 3 else 5
 <console>:1: error: illegal start of simple expression
        val maxPlusOne = 1 + if (3 > 5) 3 else 5
                             ^
-
+\end{lstlisting}
+\pause
+\begin{lstlisting}
 scala> val maxPlusOne = if (3 > 5) 3 else 5 + 1
 maxPlusOne: Int = 6 // result is not always correct
 \end{lstlisting}
@@ -562,6 +570,7 @@ var size: Int           | public abstract int size
 \end{frame}
 
 \begin{frame}[fragile]{Uniform Access Principle}
+\pause
 \emph{``All services offered by a module should be available through a uniform
 notation, which does not betray whether they are implemented through storage or
 through computation.''} - Bertrand Meyer
@@ -649,14 +658,15 @@ val newX = incrementedX // no empty parenthesis
 \end{exampleblock}
 \end{frame}
 
+\section{Summary}
 \begin{frame}{Summary}
 \begin{itemize}
-  \item Scala is a \highlight{scalable language}.
-  \item Scala has a \highlight{strong type system}.
-  \item Scala has \highlight{local type inference}.
-  \item Prefer \lstinline!val! over \lstinline!var!.
-  \item ``Everything'' is an \highlight{expression} in Scala.
-  \item ``Every'' \highlight{container} in Scala is \highlight{nestable}.
-  \item Scala respects the \highlight{Uniform Access Principle}.
+  \item Scala is a \highlight{scalable language}
+  \item Scala has a \highlight{strong type system}
+  \item Scala has \highlight{local type inference}
+  \item Prefer \lstinline!val! over \lstinline!var!
+  \item ``Everything'' is an \highlight{expression} in Scala
+  \item ``Every'' \highlight{container} in Scala is \highlight{nestable}
+  \item Scala respects the \highlight{Uniform Access Principle}
 \end{itemize}
 \end{frame}
