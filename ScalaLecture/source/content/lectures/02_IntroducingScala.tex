@@ -313,24 +313,28 @@ The value of the \highlight{object} is immutable\\
 \begin{center}
 \lstinline!var person = new Person("Vlad")!
 \end{center}
-\pause
+\onslide<2->
 \begin{block}{Contexts of mutability}
-The \highlight{type} \lstinline!Person! is still \alert{im}mutable\\
+\onslide<2-> \alt<7->{The \highlight{type} \lstinline!Person! \sout{is still
+\alert{im}mutable}\\}{The \highlight{type} \lstinline!Person! is still
+\alert{im}mutable\\}
 \begin{itemize}
 \item \lstinline!person! will always point to a \lstinline!Person!
-\item \lstinline!Person("Vlad")! will always be a \lstinline!Person!
+\onslide<3-> \alt<7->{\item \lstinline!Person("Vlad")! \sout{will
+always be} a \lstinline!Person!}{\item \lstinline!Person("Vlad")! will
+always be a \lstinline!Person!}
 \end{itemize}
-\pause
+\onslide<4->
 The value of the \highlight{reference} is \highlight{mutable}\\
 (\lstinline!person! might point to \alert{another} person someday)\\
-\pause
+\onslide<5->
 The value of the \highlight{object} is \highlight{mutable}\\
 (\lstinline!Person("Vlad")! might \alert{change internally})\\
-\pause
+\onslide<6->
 The \alert{type} of the \highlight{object} might \alert{change}!\\
 (\lstinline!Person("Vlad")! might be casted to \lstinline!Parent("Vlad")!)
 \end{block}
-\pause
+\onslide<7->
 \begin{center}
 \alert{Type casts cannot be verified by the type checker!}
 \end{center}
@@ -339,9 +343,12 @@ The \alert{type} of the \highlight{object} might \alert{change}!\\
 \begin{frame}{Immutability vs. Mutability}
 \begin{center}
 Avoid mutability at all cost, but do not demonize it!\\
-For now this means only one thing: Try to use \lstinline!val! instead of
-\lstinline!var!.
+For now this means only two things:
 \end{center}
+\begin{enumerate}
+  \item Try to use \lstinline!val! instead of \lstinline!var!.
+  \item Avoid type casts.
+\end{enumerate}
 \end{frame}
 
 \begin{frame}[fragile]{Everything is an expression}
