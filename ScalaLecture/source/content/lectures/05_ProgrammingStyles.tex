@@ -1,0 +1,134 @@
+\part[Programming Styles]{Programming Styles}
+\section{Paradigms VS Styles}
+\begin{frame}{Paradigms VS Styles}
+\begin{center}
+Paradigms are about \alert{constraints}
+\end{center}
+\begin{center}
+Styles are about \highlight{abilities}
+\end{center}
+\end{frame}
+
+\begin{frame}{Programming Styles}
+\begin{center}
+OO \& FP are not only paradigms, they are also styles (and notations)
+\end{center}
+\begin{block}{OO buzzwords}
+objects, classes, interfaces, methods, loops, statements, records, open
+recursion, information hiding, packages, imports, inheritance, polymorphism, ad
+hoc polymorphism, parametric polymorphism, generics and so on\ldots
+\end{block}
+\begin{block}{FP buzzwords}
+functions, pure functions, first-class functions, higher-order functions,
+anonymous functions, lambdas, closures, (no) side effects, expressions,
+referential transparency, parametric polymorphism, recursive path-dependent structural
+types, algebraic types, product types, sum types, higher-ranked types,
+multi-parameter typeclasses, monads, monoids, endomorphisms, catamorphisms and
+so on\ldots
+\end{block}
+\end{frame}
+
+\section{Declarative Programming}
+\begin{frame}{Declarative Programming}
+\begin{block}{What is Declarative Programming?}
+Declarative Programming is a style of programming were you declare
+\highlight{what} computation is going to be performed
+\end{block}
+\end{frame}
+
+\begin{frame}{Mathematics}
+\begin{block}{Why is it so complicated to understand how math works?}
+Math is a declarative language. It expresses \highlight{what} has to be done,
+but not \alert{how} it is done. Declaring what has to be done can be only
+accomplished at a much \highlight{higher level of abstraction} than
+instructing how something is actually done.
+\end{block}
+\pause
+\begin{exampleblock}{Here is an example}
+To be able to read this: \(f(x) = x^2\),\\ you need to be aware of this: \(x^2 =
+x*x\)
+\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{SQL}
+\begin{center}
+SQL is a declarative language. SQL is easy to learn, but hard to master.
+\end{center}
+\pause
+\begin{exampleblock}{Easy}
+\begin{lstlisting}[language=sql]
+select name from employees
+\end{lstlisting}
+\end{exampleblock}
+\pause
+\begin{alertblock}{Hard}
+\begin{lstlisting}[language=sql]
+select album.title from albums album
+where row = (select id from rows row
+              where row.id = album.row -- correlation
+              and row.name = 'Asterix')
+\end{lstlisting}
+\end{alertblock}
+\end{frame}
+
+\begin{frame}[fragile]{Functional Programming}
+\begin{center}
+Functional Programming is a subset of Declarative Programming.
+\end{center}
+\pause
+\begin{exampleblock}{SQL example written in SQL}
+\begin{lstlisting}[language=sql]
+select name from employees
+\end{lstlisting}
+\end{exampleblock}
+\pause
+\begin{exampleblock}{SQL example written using a functional notation}
+\begin{lstlisting}
+employees.select(employee => employee.name)
+\end{lstlisting}
+\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Iteration}
+\begin{center}
+Scala is a much more sophisticated language than Java. This means that
+programming in Scala you can or maybe should use different concepts than in Java
+to gain more benefit from the language.
+\end{center}
+\end{frame}
+
+\begin{frame}[fragile]{Iteration}
+\begin{exampleblock}{Fibonacci \emph{definition} in Math}
+\[
+  F_n = \left\{
+  \begin{array}{l l}
+    	0 & \quad \textrm{if $n$ = 0;}\\
+    	1 & \quad \textrm{if $n$ = 1;}\\
+    	F_n-1 + F_n-2 & \quad \textrm{if $n > 1$.}\\
+  \end{array} \right.
+\]
+\end{exampleblock}
+\pause
+\begin{exampleblock}{Fibonacci \emph{implementation} in Scala}
+\begin{lstlisting}
+def fibonacci(n: Int): Int =
+   if (n == 0) 0
+   else if (n == 1) 1
+   else fibonacci(n - 1) + fibonacci(n - 2)
+\end{lstlisting}
+\end{exampleblock}
+\end{frame}
+
+\section{Imperative Programming}
+\begin{frame}{Imperative Programming}
+\begin{block}{What is Imperative Programming?}
+Imperative Programming is a style of programming were you describe
+\highlight{how} a computation is going to be performed
+\end{block}
+\end{frame}
+\section{Summary}
+\begin{frame}{Summary}
+\begin{itemize}
+  \item 
+\end{itemize}
+\end{frame}
