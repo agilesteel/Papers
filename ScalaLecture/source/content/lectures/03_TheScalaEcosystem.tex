@@ -270,7 +270,7 @@ addSbtPlugin("com.typesafe.sbteclipse" \% "sbteclipse-plugin" \% "latest.release
 \begin{description}
 \item[console] starts the REPL
 \item[compile] compiles your production code
-\item[test-compile] compiles your production code and your test code
+\item[test:compile] compiles your production code and your test code
 \item[test] \lstinline!compile + test:compile +! runs your tests
 \item[run] compiles your production code, then searches for \lstinline!main!
 methods in your production code and either runs your application or makes you
@@ -280,7 +280,7 @@ decide, which \lstinline!main! method to run
 \pause
 \begin{center}
 \lstinline!~!command - \highlight{continuous execution} of the command
-triggered on source change
+triggered on source change (on save of the source file)
 \end{center}
 \end{frame}
 

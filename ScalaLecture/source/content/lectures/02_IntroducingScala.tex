@@ -469,7 +469,7 @@ val maxPlusOne = max(3, 5) + 1
 \begin{frame}[fragile]{Functions}
 \begin{alertblock}{Nesting functions}
 \begin{lstlisting}
-def dog(name: String, size: Int) { // no equals sign
+def bark(name: String, size: Int) { // no equals sign
   require(name != null)
   require(size > 0 && size <= 100)
   bark() // should be the last expression
@@ -481,7 +481,7 @@ def dog(name: String, size: Int) { // no equals sign
       else if (size < 60) "bow-wow"
       else "ruff"
         
-    println(noise)
+    println(name + " " + size + " " + noise)
   }
 }
 \end{lstlisting}
@@ -491,7 +491,7 @@ def dog(name: String, size: Int) { // no equals sign
 \begin{frame}[fragile]{Functions}
 \begin{exampleblock}{Nesting functions}
 \begin{lstlisting}
-def dog(name: String, size: Int) = {
+def bark(name: String, size: Int) = {
   require(name != null)
   require(size > 0 && size <= 100)
   def bark() = {
@@ -501,7 +501,7 @@ def dog(name: String, size: Int) = {
       else if (size < 60) "bow-wow"
       else "ruff"
         
-    println(noise)
+    println(name + " " + size + " " + noise)
   }
   
   bark()
@@ -551,7 +551,9 @@ public class Property {
 class ImplicitProperty {
    var size: Int = _
 }
-
+\end{lstlisting}
+\pause
+\begin{lstlisting}
 class ExplicitProperty {
    private[this] var s: Int = _
    def size = s	
