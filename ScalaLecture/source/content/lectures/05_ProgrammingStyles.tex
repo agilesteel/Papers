@@ -15,9 +15,11 @@ OO \& FP are not only paradigms, they are also styles (and notations)
 \end{center}
 \begin{block}{OO buzzwords}
 objects, classes, interfaces, methods, loops, statements, records, open
-recursion, information hiding, packages, imports, inheritance, polymorphism, ad
-hoc polymorphism, parametric polymorphism, generics and so on\ldots
+recursion, information hiding, packages, imports, modelling real world,
+inheritance, polymorphism, ad hoc polymorphism, parametric polymorphism,
+generics and so on\ldots
 \end{block}
+\pause
 \begin{block}{FP buzzwords}
 functions, pure functions, first-class functions, higher-order functions,
 anonymous functions, lambdas, closures, (no) side effects, expressions,
@@ -31,6 +33,7 @@ so on\ldots
 \section{Declarative Programming}
 \begin{frame}{Declarative Programming}
 \begin{block}{What is Declarative Programming?}
+\pause
 Declarative Programming is a style of programming were you declare
 \highlight{what} computation is going to be performed
 \end{block}
@@ -73,7 +76,7 @@ where row = (select id from rows row
 
 \begin{frame}[fragile]{Functional Programming}
 \begin{center}
-Functional Programming is a subset of Declarative Programming.
+Functional Programming is a subset of Declarative Programming
 \end{center}
 \pause
 \begin{exampleblock}{SQL example written in SQL}
@@ -82,9 +85,19 @@ select name from employees
 \end{lstlisting}
 \end{exampleblock}
 \pause
+\begin{center}
+Functional Programming is programming with functions
+\end{center}
+\pause
 \begin{exampleblock}{SQL example written using a functional notation}
 \begin{lstlisting}
 employees.select(employee => employee.name)
+\end{lstlisting}
+\end{exampleblock}
+\pause
+\begin{exampleblock}{SQL example written using one of the Scala notations}
+\begin{lstlisting}
+employees map { _.name }
 \end{lstlisting}
 \end{exampleblock}
 \end{frame}
@@ -109,7 +122,7 @@ to gain more benefit from the language.
 \]
 \end{exampleblock}
 \pause
-\begin{exampleblock}{Fibonacci \emph{implementation} in Scala}
+\begin{exampleblock}{Functional Fibonacci \emph{implementation} in Scala}
 \begin{lstlisting}
 def fibonacci(n: Int): Int =
    if (n == 0) 0
@@ -122,13 +135,436 @@ def fibonacci(n: Int): Int =
 \section{Imperative Programming}
 \begin{frame}{Imperative Programming}
 \begin{block}{What is Imperative Programming?}
+\pause
 Imperative Programming is a style of programming were you describe
 \highlight{how} a computation is going to be performed
 \end{block}
 \end{frame}
-\section{Summary}
-\begin{frame}{Summary}
+
+\begin{frame}[fragile]{Iteration}
+\begin{exampleblock}{Imperative Fibonacci \emph{implementation} in
+Scala with a ``loop''}
+\begin{lstlisting}
+def fibonacci(n: Int) = {
+   def loop = {
+      var res = 0
+      var f1 = 0
+      var f2 = 1
+      for (i <- 2 to n) { // 'for' is not just a loop in Scala
+         res = f1 + f2
+         f1 = f2
+         f2 = res
+      }
+      res
+   }
+
+   if (n <= 1) n else loop
+}
+\end{lstlisting}
+\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Iteration}
+\begin{exampleblock}{Imperative recursive Fibonacci \emph{implementation} in
+Scala}
+\begin{lstlisting}
+def fibonacci(n: Int) = {
+   @scala.annotation.tailrec
+   def recur(i: Int, f1: Int, f2: Int): Int =
+      if (i == n) f2 else recur(i + 1, f2, f1 + f2)
+
+   if (n <= 1) n else recur(1, 0, 1)
+}
+\end{lstlisting}
+\end{exampleblock}
+\pause
+\begin{block}{Annotation}
+The \lstinline!@scala.annotation.tailrec! is an optional annotation, which tells
+the compiler to generate an \alert{error} if the definition contains a recursive call, which is
+not in tail position
+\end{block}
+\end{frame}
+
+\begin{frame}{Declarative VS Imperative}
+\begin{center}
+\highlight{Every} algorithms can be expressed either using the
+\highlight{declarative} or the \highlight{imperative} style or a mixture of
+both, but not every recursive algorithm has a tail-recursive version, because
+not every algorithm can be expressed with a single loop.
+\end{center}
+\end{frame}
+
+\section{Syntax}
+\subsection{Hierarchies}
+\begin{frame}[fragile]{Hierarchies}
+\onslide<1->
+\begin{lstlisting}
+abstract class Animal
+class Dog extends Animal
+class Cat extends Animal
+\end{lstlisting}
+
+\onslide<2->
+\begin{lstlisting}
+scala> val dog = new Dog
+dog: Dog = Dog@448d9973
+
+scala> val cat = new Cat
+cat: Cat = Cat@5489f73f
+\end{lstlisting}
+
+\onslide<3->
+\begin{lstlisting}
+scala> val animal: Animal = dog
+animal: Animal = Dog@48d9973
+
+scala> val animal: Animal = cat
+animal: Animal = Cat@5489f73f
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]{Hierarchies - abstract declarations}
+\onslide<1->
+\begin{lstlisting}
+abstract class Animal {
+   def name: String // avoid abstract vals, use defs instead
+   var size: Int
+   def eat(food: String): Unit
+}
+\end{lstlisting}
+
+\onslide<2->
+\begin{lstlisting}
+class Dog(val name: String, var size: Int) extends Animal {
+   def eat(food: String) = println("Eating " + food)
+}
+
+class Cat(var size: Int) extends Animal {
+   val name = "Garfield"
+   def eat(food: String) = {
+      def response = if (food.toLowerCase == "lasagna")
+         "Eating " + food else "I'm not eating that garbage!"     
+      println(response)
+   }
+}
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]{Hierarchies - concrete definitions}
+\onslide<1->
+\begin{lstlisting}
+abstract class Animal {
+   def name = "Default name"
+   var size = 1
+   def eat(food: String) = println("Eating " + food)
+}
+\end{lstlisting}
+
+\onslide<2->
+\begin{lstlisting}
+class Dog(override val name: String) extends Animal
+\end{lstlisting}
+
+\onslide<3->
+\begin{lstlisting}
+class Cat(override val name: String, s: Int) extends Animal {
+   size = s
+   override def eat(food: String) = {
+      def response = if (food.toLowerCase == "lasagna")
+         "Eating " + food else "I'm not eating that garbage!"     
+      println(response)
+   }
+}
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]{Hierarchies - be aware of var gotchas}
+\begin{lstlisting}
+abstract class Animal {
+   def name = "Default name"
+   var size = 1
+}
+
+class Dog(override val name: String,
+           override var size: Int) extends Animal 
+           // overriding a var
+\end{lstlisting}
+\begin{alertblock}{Compiler error}
+\begin{lstlisting}
+overriding variable size in class Animal of type Int;
+variable size cannot override a mutable variable
+override var size: Int) extends Animal
+              ^
+\end{lstlisting}
+\end{alertblock}
+\end{frame}
+
+\begin{frame}[fragile]{Hierarchies - be aware of var gotchas}
+\begin{lstlisting}
+abstract class Animal {
+   def name = "Default name"
+   var size = 1
+}
+
+class Dog(override val name: String,
+           var size: Int) extends Animal 
+           // name conflict
+\end{lstlisting}
+\begin{alertblock}{Compiler error}
+\begin{lstlisting}
+overriding variable size in class Animal of type Int;
+variable size needs override modifier
+var size: Int) extends Animal
+    ^
+\end{lstlisting}
+\end{alertblock}
+\end{frame}
+
+\begin{frame}[fragile]{Hierarchies - constructors + default arguments}
+\onslide<1->
+\begin{lstlisting}
+abstract class Animal(var size: Int = 1) {
+   def name = "Default name"
+}
+\end{lstlisting}
+
+\onslide<2->
+\begin{lstlisting}
+// ignoring default argument
+class Dog(override val name: String, s: Int) extends Animal(s)
+\end{lstlisting}
+
+\onslide<3->
+\begin{lstlisting}
+// using default argument
+class Cat(override val name: String) extends Animal
+\end{lstlisting}
+
+\onslide<4->
+\begin{lstlisting}
+// ignoring default argument + using named parameter
+class Frog(override val name: String,
+                              s: Int) extends Animal(size = s)
+\end{lstlisting}
+\end{frame}
+
+\subsection{Singletons}
+\begin{frame}[fragile]{Singletons}
+\begin{lstlisting}
+class Fruit
+
+object Apple extends Fruit {
+   override def toString = "Apple"
+}
+
+object Orange extends Fruit {
+   override def toString = "Orange"
+}
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]{Singletons}
+\begin{lstlisting}
+object FirstApplication {
+   def main(args: Array[String]) = {
+      println(Orange) // Orange
+      val apple = Apple
+      println(apple == Apple) // true (object equality)
+      println(apple eq Apple) // true (referential equality)
+      eatOrange(Orange) // Eating Orange
+      eatFruit(apple) // Eating Apple
+   }
+   
+   def eatOrange(orange: Orange.type) = { // rarely used
+      println("Eating " + orange)
+   }
+   
+   def eatFruit(fruit: Fruit) = {
+      println("Eating " + fruit)
+   }
+}
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]{Singletons - behind the scenes}
+\begin{lstlisting}
+object Orange
+
+// This is not what actually happens,
+// but it helps to understand the concept
+
+val Orange = {
+   class SynthesizedOrange
+   new SynthesizedOrange
+}
+
+// These are also only roughly equivalent
+
+Orange.type == SynthesizedOrange
+\end{lstlisting}
+
+\end{frame}
+
+\begin{frame}[fragile]{Singletons - companion objects are new statics}
+\begin{block}{What is a companion object?}
+A companion object is an object, which has the same name as it's companion
+class. Companion objects \alert{must} be contained in the same file as their
+classes.
+\end{block}
+\pause
+\begin{lstlisting}
+object FootballPlayer {
+   var positions = List[Int]()
+   def apply(position: Int) = new FootballPlayer(position)
+}
+
+class FootballPlayer(val position: Int) {
+   import FootballPlayer._
+   require(position >= 1 && position <= 11)
+   require(positions forall { _ != position })
+   positions = position :: positions
+}
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]{Singletons - companion objects are new statics}
+\begin{lstlisting}
+object SinglePlayerPerPosition {
+   def main(args: Array[String]) = {
+      for (i <- 1 to 11)
+         FootballPlayer(i)
+
+      FootballPlayer(7) // throws an exception
+   }
+}
+\end{lstlisting}
+\end{frame}
+
+\subsection{Packages, Imports, Visibility}
+
+\begin{frame}[fragile]{Packages}
+\begin{block}{Packages are namespaces}
+Packages in Scala are more like namespaces in C\#. This means they can be
+nested. Scala packages can look either like Java packages or C\# namespaces or
+both.
+\end{block}
+\pause
+\begin{lstlisting}
+package de.htwgkonstanz {
+   package lecture {
+      class Scala
+   }
+   
+   package presentation {
+      class ScalaPresentation {
+         val subject = new lecture.Scala
+      }
+   }
+}
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]{Imports}
+\begin{block}{In Scala, imports:}
 \begin{itemize}
-  \item 
+  \item may appear \highlight{anywhere}
+  \item may refer to \highlight{objects} (singleton or regular) in addition to
+  packages
+  \item let you \highlight{rename} or \highlight{hide} some of the imported
+  members
+\end{itemize}
+\end{block}
+\pause
+\begin{lstlisting}
+object Fruits {
+   object Apple
+   object Orange
+   object Pear
+}
+
+// Somewhere else in the code base
+import Fruits.{Pear => _, _} // imports everything, but Pear
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]{Imports}
+\begin{lstlisting}
+import java.sql.{Date => SDate} // renames sql.Date to SDate
+
+class Dog(val name: String)
+
+class ImportExample{
+   def printName(dog: Dog) = {
+      import dog._ // imports members of dog
+      println("This is " + name);
+   }
+   
+   def printDate(date: SDate) = {
+      println(date)
+   }
+}
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]{Visibility}
+\begin{lstlisting}
+package bobsrockets {
+   package navigation {
+      private[bobsrockets] class Navigator {
+         protected[navigation] def useStarChart() = {}
+         class LegOfJourney {
+            private[Navigator] val distance = 100
+         }
+         private[this] var speed = 200
+      }
+   }
+   package launch {
+      import navigation._
+      object Vehicle {
+         private[launch] val guide = new Navigator
+      }
+   }
+}
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]{Visibility}
+\begin{block}{Effects of private qualifiers on \lstinline!LegOfJourney.distance!}
+\begin{tabular}{l|l}
+no access modifier & public access \\
+\lstinline!private[bobsrockets]! & access within outer package \\
+\lstinline!private[navigation]! & same as package visibility in Java \\
+\lstinline!private[Navigator]! & same as private in Java \\
+\lstinline!private[LegOfJourney]! & same as private in Scala \\
+\lstinline!private[this]! & access only from same object \\
+\end{tabular}
+\end{block}
+\end{frame}
+
+\section{Summary}
+\begin{frame}[fragile]{Summary}
+\begin{itemize}
+  \item Styles are \highlight{features}
+  \item Features are about \highlight{abilities}
+  \item Declarative programming is about \highlight{what} has to be done
+  \item Imperative programming is about \highlight{how} something has to be done
+  \item scalac can optimize \highlight{tail-recursion}
+  \item \highlight{Every} declarative algorithm can be described imperatively
+  \item \highlight{Every} imperative algorithm can be described declaratively
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{Summary}
+\begin{itemize}
+  \item \alert{Avoid} \lstinline!abstract val!, use \lstinline!def! instead
+  \item A \lstinline!var! cannot be overridden
+  \item Scala's methods/classes have \highlight{named} parameters
+  \item Scala's parameters can have \highlight{default} arguments
+  \item \lstinline!==! checks for \highlight{object equality}
+  \item \lstinline!eq! checks for \highlight{referential equality}
+  \item \lstinline!ne! checks for \highlight{referential inequality}
+  \item \highlight{packages} are namespaces
+  \item \highlight{imports} are very flexible
+  \item \highlight{visibility} is very granular
 \end{itemize}
 \end{frame}

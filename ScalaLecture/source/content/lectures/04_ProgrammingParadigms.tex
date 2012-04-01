@@ -47,6 +47,7 @@ Semantic classes make programmers think about programs differently
 \end{block}
 \pause
 \begin{block}{How do they do it?}
+\pause
 By disallowing programmers to think in particular ways
 \end{block}
 \pause
@@ -135,7 +136,7 @@ void copy() {
 \end{frame}
 
 \begin{frame}{Object-Oriented Programming}
-Now we want to modify out program, so that it sometimes reads characters
+Now we want to modify our program, so that it sometimes reads characters
 from the \highlight{keyboard} and sometimes reads characters from the
 \highlight{paper tape reader} and writes them sometimes to the
 \highlight{printer} and sometimes to the \highlight{paper tape punch}
@@ -159,7 +160,7 @@ void copy() {
 \begin{frame}{Object-Oriented Programming}
 \begin{center}
 Each time we add \highlight{new devices} our code becomes \alert{less
-maintainable}.\\
+maintainable}\\
 Let us take a look at the \highlight{diagrams} to find out why\ldots
 \end{center}
 \end{frame}
@@ -186,6 +187,23 @@ void copy() {
 
 \pictureframe{{Object-Oriented Programming}}{resources/OO3.pdf}
 \pictureframe{{Object-Oriented Programming}}{resources/OO4.pdf}
+
+\begin{frame}[fragile]{Object-Oriented Programming}
+\begin{lstlisting}[language=java]
+public interface Reader { char getchar(); }
+public interface Writer { void putchar(int c); }
+
+void copy(Reader reader, Writer, writer) {
+   int c;
+   while ((c = reader.getChar()) != EOF) {
+      write.putchar(c);
+   }
+}
+
+public Keyboard implements Reader { ... }
+public Printer implements Writer { ... }
+\end{lstlisting}
+\end{frame}
 
 \begin{frame}[fragile]{Object-Oriented Programming in C (not C++)}
 \begin{lstlisting}[language=c]
@@ -299,7 +317,7 @@ language follows certain \highlight{paradigms}
 \end{block}
 \pause
 \begin{alertblock}{What does not it mean for a language to follow a paradigm?}
-The fact, that the programming language allows you to write programs in
+The fact, that the programming language \alert{allows} you to write programs in
 particular programming \highlight{style} does not mean that this language
 follows a \highlight{paradigm}
 \end{alertblock}
@@ -325,7 +343,7 @@ class
 \begin{exampleblock}{Examples of pure languages}
 \begin{itemize}
   \item Java is a pure structured and OO language
-  \item Scala ia a pure structured and OO language
+  \item Scala is a pure structured and OO language
   \item Haskell is a pure structured and functional language
 \end{itemize}
 \end{exampleblock}
