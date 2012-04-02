@@ -185,13 +185,143 @@ not in tail position
 \end{block}
 \end{frame}
 
-\begin{frame}{Declarative VS Imperative}
+\begin{frame}{Imperative VS Declarative}
 \begin{center}
 \highlight{Every} algorithms can be expressed either using the
 \highlight{declarative} or the \highlight{imperative} style or a mixture of
 both, but not every recursive algorithm has a tail-recursive version, because
 not every algorithm can be expressed with a single loop.
 \end{center}
+\end{frame}
+
+\begin{frame}{Imperative OO VS Declarative FP}
+\begin{block}{Is imperative/declarative just another word for OO/FP?}
+The \highlight{imperative style} is often confused or at least used in
+connection with the \highlight{OO style}. The same goes for the
+\highlight{declarative and FP} combination. Why is that so?
+\end{block}
+\pause
+\begin{block}{Imperative OO}
+Objects contain behaviour and \highlight{state}. Imperative style uses
+\highlight{state}ments to handle \highlight{state}.
+\end{block}
+\pause
+\begin{block}{Declarative FP}
+Functions map inputs to outputs. Declarative style uses \highlight{expressions}
+to produce values for the output of the functions.
+\end{block}
+\end{frame}
+
+\begin{frame}{Imperative OO VS Declarative FP}
+\begin{center}
+Scala is a \highlight{blend} between the OO \& FP styles and thus a
+\highlight{blend} between the imperative \& declarative programming styles
+\end{center}
+\begin{center}
+If you try to \alert{stick to only one style} in Scala you will literally
+\alert{fight the language (compiler)}
+\end{center}
+\begin{center}
+Scala let's you \highlight{decide which style you prefer}, but encourages the
+\highlight{functional} style
+\end{center}
+\end{frame}
+
+\begin{frame}[fragile]{Imperative OO VS Declarative FP}
+\begin{center}
+We would like to port this program from Java to Scala
+\end{center}
+\begin{block}{This is Java}
+\begin{lstlisting}{language=java}
+public boolean isPrime(int n) {
+   for (int i = 2; i * i <= n; i++)
+      if (n % i == 0)
+         return false;
+   return true;
+}
+\end{lstlisting}
+\end{block}
+\end{frame}
+
+\begin{frame}[fragile]{Imperative OO VS Declarative FP}
+\begin{alertblock}{Compiles, but does not work as expected}
+\begin{lstlisting}
+def isPrime(n: Int) = {
+   var i = 2
+   while (i * i <= n) {
+      if (n % i == 0)
+         false
+      i += 1
+   }
+   true
+}
+
+def isPrime(n: Int) = {
+   for (i <- 2 to math.sqrt(n).toInt)
+      if (n % i == 0)
+         false
+   true
+}
+\end{lstlisting}
+\end{alertblock}
+\end{frame}
+
+\begin{frame}[fragile]{Imperative OO VS Declarative FP}
+\begin{alertblock}{Does not compile}
+\begin{lstlisting}
+def isPrime(n: Int) = {
+   var i = 2
+   while (i * i <= n) {
+      if (n % i == 0)
+         return false
+      i += 1
+   }
+   true
+}
+
+def isPrime(n: Int) = {
+   for (i <- 2 to math.sqrt(n).toInt)
+      if (n % i == 0)
+         return false
+   true
+}
+\end{lstlisting}
+\end{alertblock}
+\end{frame}
+
+\begin{frame}[fragile]{Imperative OO VS Declarative FP}
+\begin{block}{Compiles and works as expected, but does not look like Scala}
+\begin{lstlisting}
+def isPrime(n: Int): Boolean = {
+   var i = 2
+   while (i * i <= n) {
+      if (n % i == 0)
+         return false
+      i += 1
+   }
+   true
+}
+
+def isPrime(n: Int): Boolean = {
+   for (i <- 2 to math.sqrt(n).toInt)
+      if (n % i == 0)
+         return false
+   true
+}
+\end{lstlisting}
+\end{block}
+\end{frame}
+
+\begin{frame}[fragile]{Imperative OO VS Declarative FP}
+\begin{exampleblock}{Compiles and works as expected}
+\begin{lstlisting}
+def isPrime(n: Int) =
+   2 to n takeWhile { i => i * i <= n } forall { n % _ != 0 }
+
+def isPrime(n: Int) =
+   2 to math.sqrt(n).toInt forall { n % _ != 0 }
+\end{lstlisting}
+\end{exampleblock}
 \end{frame}
 
 \section{Syntax}
@@ -407,9 +537,9 @@ Orange.type == SynthesizedOrange
 
 \begin{frame}[fragile]{Singletons - companion objects are new statics}
 \begin{block}{What is a companion object?}
-A companion object is an object, which has the same name as it's companion
-class. Companion objects \alert{must} be contained in the same file as their
-classes.
+A companion object is an object, which has the \highlight{same name} as it's
+companion class. Companion objects \alert{must} be contained in the
+\highlight{same file} as their respective classes.
 \end{block}
 \pause
 \begin{lstlisting}
@@ -511,7 +641,7 @@ class ImportExample{
 package bobsrockets {
    package navigation {
       private[bobsrockets] class Navigator {
-         protected[navigation] def useStarChart() = {}
+         private[navigation] def useStarChart() = {}
          class LegOfJourney {
             private[Navigator] val distance = 100
          }
