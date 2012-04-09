@@ -80,6 +80,7 @@ println(title) // Scripts must end with an expression
 \pictureframe{Enterprise applications}{resources/ScalaIndustry.pdf}
 
 \section{Syntax}
+\subsection{Baby steps}
 \begin{frame}[fragile]{Reading Scala}
 \begin{block}{The types are specified next to an identifier separated by a colon}
 \begin{tabular}{l|l}
@@ -200,6 +201,7 @@ Is value? \lstinline!true! &  progress\\
 \end{exampleblock}
 \end{frame}
 
+\subsection{Type Inference}
 \begin{frame}{Type Inference}
 \begin{block}{Where do types come from?}
 \alert{Nothing} in the type theory forces the typing to be
@@ -351,6 +353,7 @@ For now this means only two things:
 \end{enumerate}
 \end{frame}
 
+\subsection{Expressions}
 \begin{frame}[fragile]{Everything is an expression}
 \begin{block}{What is an expression?}
 Expression is a combination of values, which require at least one step to
@@ -466,6 +469,7 @@ val maxPlusOne = max(3, 5) + 1
 
 \pictureframe{Functions}{resources/Functions.pdf}
 
+\subsection{Functions}
 \begin{frame}[fragile]{Functions}
 \begin{alertblock}{Nesting functions}
 \begin{lstlisting}
@@ -510,6 +514,7 @@ def bark(name: String, size: Int) = {
 \end{exampleblock}
 \end{frame}
 
+\subsection{Classes}
 \begin{frame}[fragile]{Classes are where large functions go to hide}
 \begin{lstlisting}
 class Dog(val name: String, _size: Int) {
@@ -530,6 +535,7 @@ class Dog(val name: String, _size: Int) {
 \end{lstlisting}
 \end{frame}
 
+\subsection{Properties}
 \begin{frame}[fragile]{Properties in Java}
 \begin{lstlisting}[language=java]
 public class Property {
@@ -578,6 +584,7 @@ var size: Int           | public abstract int size
 \end{lstlisting}
 \end{frame}
 
+\subsection{Uniform Access Principle}
 \begin{frame}[fragile]{Uniform Access Principle}
 \pause
 \emph{``All services offered by a module should be available through a uniform
@@ -667,6 +674,352 @@ val newX = incrementedX // no empty parenthesis
 \end{exampleblock}
 \end{frame}
 
+\subsection{Hierarchies}
+\begin{frame}[fragile]{Hierarchies}
+\onslide<1->
+\begin{lstlisting}
+abstract class Animal
+class Dog extends Animal
+class Cat extends Animal
+\end{lstlisting}
+
+\onslide<2->
+\begin{lstlisting}
+scala> val dog = new Dog
+dog: Dog = Dog@448d9973
+
+scala> val cat = new Cat
+cat: Cat = Cat@5489f73f
+\end{lstlisting}
+
+\onslide<3->
+\begin{lstlisting}
+scala> val animal: Animal = dog
+animal: Animal = Dog@48d9973
+
+scala> val animal: Animal = cat
+animal: Animal = Cat@5489f73f
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]{Hierarchies - abstract declarations}
+\onslide<1->
+\begin{lstlisting}
+abstract class Animal {
+   def name: String // avoid abstract vals, use defs instead
+   var size: Int
+   def eat(food: String): Unit
+}
+\end{lstlisting}
+
+\onslide<2->
+\begin{lstlisting}
+class Dog(val name: String, var size: Int) extends Animal {
+   def eat(food: String) = println("Eating " + food)
+}
+
+class Cat(var size: Int) extends Animal {
+   val name = "Garfield"
+   def eat(food: String) = {
+      def response = if (food.toLowerCase == "lasagna")
+         "Eating " + food else "I'm not eating that garbage!"     
+      println(response)
+   }
+}
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]{Hierarchies - concrete definitions}
+\onslide<1->
+\begin{lstlisting}
+abstract class Animal {
+   def name = "Default name"
+   var size = 1
+   def eat(food: String) = println("Eating " + food)
+}
+\end{lstlisting}
+
+\onslide<2->
+\begin{lstlisting}
+class Dog(override val name: String) extends Animal
+\end{lstlisting}
+
+\onslide<3->
+\begin{lstlisting}
+class Cat(override val name: String, s: Int) extends Animal {
+   size = s
+   override def eat(food: String) = {
+      def response = if (food.toLowerCase == "lasagna")
+         "Eating " + food else "I'm not eating that garbage!"     
+      println(response)
+   }
+}
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]{Hierarchies - be aware of var gotchas}
+\begin{lstlisting}
+abstract class Animal {
+   def name = "Default name"
+   var size = 1
+}
+
+class Dog(override val name: String,
+           override var size: Int) extends Animal 
+           // overriding a var
+\end{lstlisting}
+\begin{alertblock}{Compiler error}
+\begin{lstlisting}
+overriding variable size in class Animal of type Int;
+variable size cannot override a mutable variable
+override var size: Int) extends Animal
+              ^
+\end{lstlisting}
+\end{alertblock}
+\end{frame}
+
+\begin{frame}[fragile]{Hierarchies - be aware of var gotchas}
+\begin{lstlisting}
+abstract class Animal {
+   def name = "Default name"
+   var size = 1
+}
+
+class Dog(override val name: String,
+           var size: Int) extends Animal 
+           // name conflict
+\end{lstlisting}
+\begin{alertblock}{Compiler error}
+\begin{lstlisting}
+overriding variable size in class Animal of type Int;
+variable size needs override modifier
+var size: Int) extends Animal
+    ^
+\end{lstlisting}
+\end{alertblock}
+\end{frame}
+
+\begin{frame}[fragile]{Hierarchies - constructors + default arguments}
+\onslide<1->
+\begin{lstlisting}
+abstract class Animal(var size: Int = 1) {
+   def name = "Default name"
+}
+\end{lstlisting}
+
+\onslide<2->
+\begin{lstlisting}
+// ignoring default argument
+class Dog(override val name: String, s: Int) extends Animal(s)
+\end{lstlisting}
+
+\onslide<3->
+\begin{lstlisting}
+// using default argument
+class Cat(override val name: String) extends Animal
+\end{lstlisting}
+
+\onslide<4->
+\begin{lstlisting}
+// ignoring default argument + using named parameter
+class Frog(override val name: String,
+                              s: Int) extends Animal(size = s)
+\end{lstlisting}
+\end{frame}
+
+\subsection{Singletons}
+\begin{frame}[fragile]{Singletons}
+\begin{lstlisting}
+class Fruit
+
+object Apple extends Fruit {
+   override def toString = "Apple"
+}
+
+object Orange extends Fruit {
+   override def toString = "Orange"
+}
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]{Singletons}
+\begin{lstlisting}
+object FirstApplication {
+   def main(args: Array[String]) = {
+      println(Orange) // Orange
+      val apple = Apple
+      println(apple == Apple) // true (object equality)
+      println(apple eq Apple) // true (referential equality)
+      eatOrange(Orange) // Eating Orange
+      eatFruit(apple) // Eating Apple
+   }
+   
+   def eatOrange(orange: Orange.type) = { // rarely used
+      println("Eating " + orange)
+   }
+   
+   def eatFruit(fruit: Fruit) = {
+      println("Eating " + fruit)
+   }
+}
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]{Singletons - behind the scenes}
+\begin{lstlisting}
+object Orange
+
+// This is not what actually happens,
+// but it helps to understand the concept
+
+val Orange = {
+   class SynthesizedOrange
+   new SynthesizedOrange
+}
+
+// These are also only roughly equivalent
+
+Orange.type == SynthesizedOrange
+\end{lstlisting}
+
+\end{frame}
+
+\begin{frame}[fragile]{Singletons - companion objects are new statics}
+\begin{block}{What is a companion object?}
+A companion object is an object, which has the \highlight{same name} as it's
+companion class. Companion objects \alert{must} be contained in the
+\highlight{same file} as their respective classes.
+\end{block}
+\pause
+\begin{lstlisting}
+object FootballPlayer {
+   var positions = List[Int]()
+   def apply(position: Int) = new FootballPlayer(position)
+}
+
+class FootballPlayer(val position: Int) {
+   import FootballPlayer._
+   require(position >= 1 && position <= 11)
+   require(positions forall { _ != position })
+   positions = position :: positions
+}
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]{Singletons - companion objects are new statics}
+\begin{lstlisting}
+object SinglePlayerPerPosition {
+   def main(args: Array[String]) = {
+      for (i <- 1 to 11)
+         FootballPlayer(i)
+
+      FootballPlayer(7) // throws an exception
+   }
+}
+\end{lstlisting}
+\end{frame}
+
+\subsection{Packages, Imports, Visibility}
+
+\begin{frame}[fragile]{Packages}
+\begin{block}{Packages are namespaces}
+Packages in Scala are more like namespaces in C\#. This means they can be
+nested. Scala packages can look either like Java packages or C\# namespaces or
+both.
+\end{block}
+\pause
+\begin{lstlisting}
+package de.htwgkonstanz {
+   package lecture {
+      class Scala
+   }
+   
+   package presentation {
+      class ScalaPresentation {
+         val subject = new lecture.Scala
+      }
+   }
+}
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]{Imports}
+\begin{block}{In Scala, imports:}
+\begin{itemize}
+  \item may appear \highlight{anywhere}
+  \item may refer to \highlight{objects} (singleton or regular) in addition to
+  packages
+  \item let you \highlight{rename} or \highlight{hide} some of the imported
+  members
+\end{itemize}
+\end{block}
+\pause
+\begin{lstlisting}
+object Fruits {
+   object Apple
+   object Orange
+   object Pear
+}
+
+// Somewhere else in the code base
+import Fruits.{Pear => _, _} // imports everything, but Pear
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]{Imports}
+\begin{lstlisting}
+import java.sql.{Date => SDate} // renames sql.Date to SDate
+
+class Dog(val name: String)
+
+class ImportExample{
+   def printName(dog: Dog) = {
+      import dog._ // imports members of dog
+      println("This is " + name);
+   }
+   
+   def printDate(date: SDate) = {
+      println(date)
+   }
+}
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]{Visibility}
+\begin{lstlisting}
+package bobsrockets {
+   package navigation {
+      private[bobsrockets] class Navigator {
+         private[navigation] def useStarChart() = {}
+         class LegOfJourney {
+            private[Navigator] val distance = 100
+         }
+         private[this] var speed = 200
+      }
+   }
+   package launch {
+      import navigation._
+      object Vehicle {
+         private[launch] val guide = new Navigator
+      }
+   }
+}
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]{Visibility}
+\begin{block}{Effects of private qualifiers on \lstinline!LegOfJourney.distance!}
+\begin{tabular}{l|l}
+no access modifier & public access \\
+\lstinline!private[bobsrockets]! & access within outer package \\
+\lstinline!private[navigation]! & same as package visibility in Java \\
+\lstinline!private[Navigator]! & same as private in Java \\
+\lstinline!private[LegOfJourney]! & same as private in Scala \\
+\lstinline!private[this]! & access only from same object \\
+\end{tabular}
+\end{block}
+\end{frame}
+
 \section{Summary}
 \begin{frame}{Summary}
 \begin{itemize}
@@ -677,5 +1030,20 @@ val newX = incrementedX // no empty parenthesis
   \item ``Everything'' is an \highlight{expression} in Scala
   \item ``Every'' \highlight{container} in Scala is \highlight{nestable}
   \item Scala respects the \highlight{Uniform Access Principle}
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{Summary}
+\begin{itemize}
+  \item \alert{Avoid} \lstinline!abstract val!, use \lstinline!def! instead
+  \item A \lstinline!var! cannot be overridden
+  \item Scala's methods/classes have \highlight{named} parameters
+  \item Scala's parameters can have \highlight{default} arguments
+  \item \lstinline!==! checks for \highlight{object equality}
+  \item \lstinline!eq! checks for \highlight{referential equality}
+  \item \lstinline!ne! checks for \highlight{referential inequality}
+  \item \highlight{packages} are namespaces
+  \item \highlight{imports} are very flexible
+  \item \highlight{visibility} is very granular
 \end{itemize}
 \end{frame}
