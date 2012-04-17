@@ -38,7 +38,8 @@
     % Java keywords from here
     public, void, int, static, implements, interface, enum},
   sensitive=true,
-  morecomment=[l]{//},
+  morekeywords=[2]{Any, AnyVal, AnyRef, Double, Float, Long, Int, Short, Byte,
+  Unit, Boolean, Char, String, Null, Nothing}, morecomment=[l]{//},
   morecomment=[n]{/*}{*/},
   morestring=[b]",
   morestring=[b]',
@@ -60,6 +61,7 @@
 \definecolor{dkgreen}{rgb}{0,0.6,0}
 \definecolor{gray}{rgb}{0.5,0.5,0.5}
 \definecolor{mauve}{rgb}{0.58,0,0.82}
+\definecolor{cyan(process)}{rgb}{0.0, 0.72, 0.92}
  
 \lstset{ % Default settings for code listings
   frame=tb,
@@ -73,6 +75,7 @@
   captionpos=t,
   numberstyle=\tiny\color{gray},
   keywordstyle=\color{blue},
+  keywordstyle=[2]\color{cyan(process)},
   commentstyle=\color{dkgreen},
   stringstyle=\color{mauve},
   frame=none,

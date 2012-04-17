@@ -7,7 +7,7 @@
 \end{frame}
 
 \begin{frame}[fragile]{``Any value'' is an object in Scala}
-\begin{block}{Any}
+\begin{block}{\lstinline!Any!}
 Because every class inherits from \lstinline!Any!, every object in a Scala
 program can be compared using \lstinline!==!, !=, or
 \lstinline!equals!; hashed using \lstinline!hashCode!; and formatted using
@@ -39,8 +39,8 @@ object-oriented type system in a uniform way
 
 \begin{frame}[fragile]{Null}
 \begin{center}
-Class \lstinline!Null! is the type of the null reference; it is a subclass of
-every reference class (i.e., every class that itself inherits from
+Class \lstinline!Null! is the type of the \lstinline!null! reference; it is a
+subclass of every reference class (i.e., every class that itself inherits from
 \lstinline!AnyRef!). \lstinline!Null! is not compatible with \alert{value
 types}. You cannot, for example, assign a \lstinline!null! value to an integer
 variable:
@@ -114,16 +114,16 @@ ralph: Nothing
 \end{lstlisting}
 \pause
 \begin{lstlisting}
-scala> def whatsItGonnaBe(healthy: Boolean) =
-     |    if(healthy) "dance" else ralph
+scala> def whatsItGonnaBe(sober: Boolean) =
+     |    if(sober) "keep drinking" else ralph
 whatsItGonnaBe: java.lang.String
 \end{lstlisting}
 \pause
 \begin{lstlisting}
-scala> println(whatsItGonnaBe(healthy = true))
-dance
+scala> println(whatsItGonnaBe(sober = true))
+keep drinking
 
-scala> println(whatsItGonnaBe(healthy = false))
+scala> println(whatsItGonnaBe(sober = false))
 java.lang.Exception
         at .<init>(<console>:7)
         ...
@@ -436,7 +436,7 @@ the algorithm is itself some other algorithm!
 \onslide<1->\begin{lstlisting}
 def containsNeg(nums: List[Int]): Boolean = {
    var exists = false
-      for (num < nums)
+      for (num <- nums)
 \end{lstlisting}
 \onslide<1->\lstinline!          if (!\onslide<2->\lstinline!num < 0!\onslide<1->\lstinline!)!
 \onslide<1->\begin{lstlisting}
@@ -446,7 +446,7 @@ def containsNeg(nums: List[Int]): Boolean = {
 
 def containsOdd(nums: List[Int]): Boolean = {
    var exists = false
-      for (num < nums)
+      for (num <- nums)
 \end{lstlisting}
 \onslide<1->\lstinline!          if (!\onslide<2->\lstinline!num % 2 == 1!\onslide<1->\lstinline!)!
 \onslide<1->\begin{lstlisting}         
