@@ -1,6 +1,7 @@
 .metadata/
 CodeSamples/
 Thesis/
+ProcessSimulationEDA/
 
 # Latex
 *.aux

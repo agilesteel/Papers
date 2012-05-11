@@ -1,0 +1,750 @@
+\part[Pattern Matching]{Pattern Matching}
+\section{Objects VS Data Structures}
+\begin{frame}[fragile]{Objects VS Data Structures}
+\begin{block}{Objects}
+\begin{lstlisting}
+abstract class Shape {
+   def draw(): Unit
+}
+class Circle extends Shape {
+   def draw(): Unit = println("Drawing a circle")
+}
+class Rectangle extends Shape {
+   def draw(): Unit = println("Drawing a rectangle")
+}   
+\end{lstlisting}
+\end{block}
+\pause
+\begin{block}{Algorithm which uses objects}
+\begin{lstlisting}
+val shape: Shape = getShape
+shape.draw()
+\end{lstlisting}
+\end{block}
+\end{frame}
+
+\begin{frame}[fragile]{Objects VS Data Structures}
+\begin{center}
+Adding new types does not require the algorithm to be modified, recompiled,
+retested or redeployed. Adding new methods to \lstinline!Shape! on the other
+hand requires modification, recompilation, retesting and redeployment of
+\alert{all} \lstinline!Shape! derivatives.
+\end{center}
+\end{frame}
+
+\begin{frame}[fragile]{Objects VS Data Structures}
+\begin{block}{Data Structures}
+\begin{lstlisting}
+class Circle
+class Rectangle
+object Shape {
+   def drawCircle(circle: Circle): Unit =
+      println("Drawing a circle")
+   def drawRectangle(rectangle: Rectangle): Unit =
+      println("Drawing a rectangle")
+}
+\end{lstlisting}
+\end{block}
+\end{frame}
+
+\begin{frame}[fragile]{Objects VS Data Structures}
+\begin{block}{Algorithm which uses data structures}
+\begin{lstlisting}
+val shape: Any = getShape
+if (shape.isInstanceOf[Circle])
+   Shape.drawCircle(shape.asInstanceOf[Circle])
+else if (shape.isInstanceOf[Rectangle])
+   Shape.drawRectangle(shape.asInstanceOf[Rectangle])
+else 
+   println("Not a shape")
+\end{lstlisting}
+\end{block}
+\end{frame}
+
+\begin{frame}[fragile]{Objects VS Data Structures}
+\begin{center}
+Adding new methods does not require the algorithm to be modified, recompiled,
+retested or redeployed. Adding new types of shape on the other
+hand requires modification, recompilation, retesting and redeployment of
+\alert{all} algorithms, that use shapes.
+\end{center}
+\end{frame}
+
+\begin{frame}{Objects VS Data Structures}
+\onslide<1->\begin{block}{Objects}
+\onslide<2->Objects have \highlight{state} (data) and \highlight{behavior} (methods)\\
+\onslide<3->Objects \alert{hide state} and \highlight{expose behavior}\\
+\onslide<4->Objects protect you against \highlight{new types}\\
+\end{block}
+\begin{center}
+\onslide<5->Objects and Data Structures are \highlight{diametrically opposed}
+\end{center}
+\onslide<1->\begin{block}{Data Structures}
+\onslide<2->Data Structures have \highlight{state} (data) but \alert{no behavior}* (methods)\\
+\onslide<3->Data Structures \highlight{expose data} and \alert{``hide'' behavior}\\
+\onslide<4->Data Structures protect you against \highlight{new behavior}\\
+\end{block}
+\onslide<2->* Data Structures may contain \highlight{navigational} methods
+\end{frame}
+
+\begin{frame}[fragile]{Alternatives for dealing with Data Structures}
+\begin{block}{Method Overloading}
+\begin{lstlisting}
+class Circle
+class Rectangle
+object Shape {
+   def draw(circle: Circle): Unit =
+      println("Drawing a circle")
+   def draw(rectangle: Rectangle): Unit =
+      println("Drawing a rectangle")
+}
+\end{lstlisting}
+\end{block}
+\pause
+\begin{alertblock}{Algorithm which uses the data structure}
+\begin{lstlisting}
+val shape: Circle = getShape
+Shape.draw(shape) // the type needs to be known at compile time
+\end{lstlisting}
+\end{alertblock}
+\end{frame}
+
+\begin{frame}[fragile]{Alternatives for dealing with Data Structures}
+\begin{block}{Match expression}
+\begin{lstlisting}
+val shape: Any = getShape
+shape match {
+   case circle: Circle => Shape.draw(circle)
+   case rectangle: Rectangle => Shape.draw(rectangle)
+   case somethingElse => println("Not a shape")
+}
+\end{lstlisting}
+\end{block}
+\end{frame}
+
+\begin{frame}[fragile]{Match expressions are switch statements on steroids}
+\begin{block}{Switch statement in Java}
+\lstinline[language=java]!switch (x) { alternatives }!
+\end{block}
+\begin{block}{Match expression in Scala}
+\lstinline!x match { alternatives }!
+\end{block}
+\begin{block}{Differences}
+\begin{center}
+\begin{tabular}{|l|r|}
+\hline
+\textsc{Java switch} & \textsc{Scala match}\\
+\hline
+\hline
+statement & expression\\
+\hline
+requires breaks & does not fall through cases\\
+\hline
+works only for integers and enum types* & works for virtually everything\\
+\hline
+\end{tabular}
+\end{center}
+\end{block}
+* strings are also supported since Java 7
+\end{frame}
+\section{Extractors}
+\begin{frame}{Extractors}
+Computers store data as ones and zeroes. Only literally hundreds abstraction
+levels later we see emails, pictures, videos and so on. In other words,
+we \highlight{view} the data representation but not the data itself. Programming
+languages provide means for defining your own \highlight{data abstractions}. For
+instance, a class can encapsulate few strings and integers. The end user will
+view objects of this class, as, for example, an address, the programmer will
+view this class as a bunch of strings and integers, the compiler will view this
+class as a type. The list continues all the way down to ones and zeros.
+\end{frame}
+
+\begin{frame}{Extractors}
+Each of those \highlight{viewers extract} some information from this class by
+looking at it in a special way without knowing what they are actually looking
+at. You can imagine it as looking  at something with different glasses. Each
+pair of glasses is adjusted to \highlight{recognize a single pattern}. Scala
+gives you tools for building such glasses called \highlight{extractors}.
+\end{frame}
+
+\begin{frame}[fragile]{Extractors}
+We want to write an extractor called \lstinline!File!, which would parse file
+paths, represented by \lstinline!String!s and extract the \highlight{location},
+the \highlight{name} and the \highlight{extension} of a file path respectively.
+The extractor should also take care of testing if the given \lstinline!String!
+has a form of a file path.
+\pause
+\begin{exampleblock}{The \lstinline!File! extractor in action}
+\begin{lstlisting}
+selector match {
+   case File(location, name, extension) => ...
+}
+\end{lstlisting}
+\end{exampleblock}
+\pause
+Before that we take a quick look at \lstinline!Option! and \lstinline!Tuple!
+from the Scala library\ldots
+\end{frame}
+
+\begin{frame}[fragile]{Tuple}
+\begin{block}{What is a tuple?}
+Tuples are heterogeneous collections with fixed size. Use them like classes
+without names, but do not confuse them with anonymous classes!
+\end{block}
+\pause
+\begin{exampleblock}{Tuples in action}
+\lstinline!// Creating tuples!\\
+\lstinline!val x = new Tuple2("hello", 5)!\\
+\lstinline!val x = ("hello", 5)!\\
+\lstinline!val x = "hello" -> 5!\\
+\lstinline!val x: Tuple2[String, Int] = "hello" -> 5!\\
+\lstinline!val x: (String, Int) = "hello" -> 5!\\
+\lstinline!// Using tuples!\\
+\lstinline!scala> val s = x._1!\\
+\lstinline!s: String = hello!\\
+\lstinline!scala> val i = x._2!\\
+\lstinline!i: Int = 5!
+\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Option}
+\begin{block}{Option is a better way of handling \lstinline!null!}
+\lstinline!sealed abstract class Option[+A]!\\
+\lstinline!case class Some[+A](x: A) extends Option[A]!\\
+\lstinline!case object None extends Option[Nothing]!
+\end{block}
+\pause
+\begin{exampleblock}{Option in action}
+\begin{lstlisting}
+scala> val dogs = Array("Snoopy", "Fluffy")
+dogs: Array[String] = Array(Snoopy, Fluffy)
+
+scala> val maybeFluffy = dogs find { _ == "Fluffy" }
+maybeFluffy: Option[String] = Some(Fluffy)
+
+scala> val maybeRex = dogs find { _ == "Rex" }
+maybeRex: Option[String] = None
+\end{lstlisting}
+\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{The \lstinline!File! path extractor}
+\onslide<1->\lstinline!object File {!\\
+\onslide<7->\lstinline!   // The injection method (optional)!\\
+\onslide<7->\lstinline!   def apply(loc: String, name: String, ext: String): String =!\\
+\onslide<7->\lstinline!      loc + "\\" + name + "." + ext!\\
+\onslide<7->\lstinline!!\\
+\onslide<2->\lstinline!   // The extraction method (mandatory)!\\
+\onslide<2->\lstinline!   def unapply!\onslide<3->\lstinline!(path: String)!\onslide<4->\lstinline!: Option[(String, String, String)]!\onslide<2->\lstinline! = {!\\
+\onslide<5->\lstinline!      val location = // parse the path somehow!\\
+\onslide<5->\lstinline!      val name = // parse the path somehow!\\
+\onslide<5->\lstinline!      val extension = // parse the path somehow!\\
+\onslide<6->\lstinline!      if (/* somethingWentWrong */) None!\\
+\onslide<6->\lstinline!      else Some(location, name, extension)!\\
+\onslide<2->\lstinline!   }!\\
+\onslide<1->\lstinline!}!
+\end{frame}
+
+\begin{frame}[fragile]{The \lstinline!File! path extractor}
+\begin{exampleblock}{File factory in action}
+\begin{lstlisting}
+scala> val implicitFile = """location\name.extension"""
+implicitFile: String = location\name.extension
+
+scala> val explicitFile = File("location", "name", "extension")
+explicitFile: String = location\name.extension
+\end{lstlisting}
+\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{The \lstinline!File! path extractor}
+\begin{exampleblock}{File extractor in action 1}
+\begin{lstlisting}
+def isThisAFile(selector: Any): Boolean = selector match {
+  case File(_, _, _) => true
+  case _ => false
+}
+\end{lstlisting}
+\end{exampleblock}
+\pause
+\begin{block}{File extractor in action 1 - some notes}
+\begin{itemize}
+  \item if \lstinline!selector! is not of type \lstinline!String! the first case does not match
+  \item \lstinline!case File(_, _, _) =>! is transformed to \lstinline!File.unapply(selector)!
+  \item \lstinline!case _ => ! is a default case (exception is thrown if not provided)
+\end{itemize}
+\end{block}
+\end{frame}
+
+\begin{frame}[fragile]{The \lstinline!File! path extractor}
+\begin{exampleblock}{File extractor in action 2}
+\begin{lstlisting}
+def showNameIfFile(selector: String): Unit = selector match {
+  case File(_, name, _) => println(name)
+  case _ =>
+}
+\end{lstlisting}
+\end{exampleblock}
+\pause
+\begin{block}{File extractor in action 2 - some notes}
+\begin{itemize}
+  \item no need to check if \lstinline!selector! is of type \lstinline!String!,
+  but the syntax remains the same
+  \item no need to return \lstinline!()! in the default case
+\end{itemize}
+\end{block}
+\end{frame}
+
+\begin{frame}[fragile]{The \lstinline!File! path extractor in action 3}
+\onslide<1->\lstinline!def isTODOtxt_isOn_D_Docs(selector: Any): String = selector match {!\\
+\onslide<2->\lstinline!  case File("""D:\Docs""", "todo", "txt") =>!\\
+\onslide<2->\lstinline!    """Yes, todo.txt is on D:\Docs"""!\\
+\onslide<3->\lstinline!  case File(location, "todo", "txt") =>!\\
+\onslide<3->\lstinline!    "No, todo.txt is on " + location!\\
+\onslide<4->\lstinline!  case File("""D:\Docs""", name, "txt") =>!\\
+\onslide<4->\lstinline!    "No, but " + name + """ is on D:\Docs"""!\\
+\onslide<5->\lstinline!  case File(location, name, "txt") =>!\\
+\onslide<5->\lstinline!    "This is " + name + ".txt and it is on " + location!\\
+\onslide<6->\lstinline!  case File(loc, name, ext) =>!\\
+\onslide<6->\lstinline!    "This is " + name + "." + ext + " and it is on " + loc!\\ 
+\onslide<7->\lstinline!  case file @ File(location, name, ext) => file.toString!\\
+\onslide<8->\lstinline!  case x: String => "What am I supposed to do with " + x + "?"!\\
+\onslide<9->\lstinline!  case _ => "This does not even look like a file"!\\
+\onslide<1->\lstinline!}!\onslide<10->\lstinline!// The order of the alternatives is significant!
+\end{frame}
+
+\begin{frame}[fragile]{The \lstinline!File! path extractor}
+\begin{exampleblock}{File extractor in action 4 - nested patterns}
+\begin{lstlisting}
+def deepMatch(selector: Any): Unit = selector match {
+  case File(location @ Location("D:\\", _*), name, "txt") =>
+     location foreach prinln
+}
+\end{lstlisting}
+\end{exampleblock}
+\pause
+\begin{exampleblock}{File extractor in action 4 - nested patterns}
+\begin{lstlisting}
+val bunchOfPaths = List("loc1", "D:\docs\homework.txt", "loc3")
+bunchOfPaths foreach deepMatch
+\end{lstlisting}
+\end{exampleblock}
+\pause
+\begin{block}{Note}
+The \lstinline!Location! extractor needs to implement the\\
+\lstinline!def unapplySeq(location: String): Option[Seq[String]]!
+\end{block}
+\end{frame}
+
+\begin{frame}[fragile]{Kinds of patterns}
+\onslide<1->\lstinline!selector match {!\\
+\onslide<3->\lstinline!   case 5 => "constant pattern"!\\
+\onslide<3->\lstinline!   case true => "constant pattern"!\\
+\onslide<3->\lstinline!   case "hello" => "constant pattern"!\\
+\onslide<4->\lstinline!   case Nil => "constant pattern"!\\
+\onslide<5->\lstinline!   case x => "variable pattern"!\\
+\onslide<5->\lstinline!   // unreachable code after this line!\\
+\onslide<6->\lstinline!   case File(loc, n, e) => "constructor pattern"!\\
+\onslide<7->\lstinline!   case list @ List(0, _, _*) => "sequence pattern"!\\
+\onslide<8->\lstinline!   case (x, "test", 10, y) => "tuple pattern"!\\
+\onslide<9->\lstinline!   case x: String => "typed pattern"!\\
+\onslide<10->\lstinline!   case x: List[String] => "type erasure" // be careful!\\
+\onslide<11->\lstinline!   case x: List[_] => "type constructor pattern"!\\
+\onslide<2->\lstinline!   case _ => "wildcard pattern"!\\
+\onslide<1->\lstinline!}!
+\end{frame}
+
+\begin{frame}[fragile]{Kinds of patterns}
+\begin{block}{Constant or Variable?}
+Identifiers starting with a capital letter or those marked with back ticks are
+treated as \highlight{constants}. Any other identifier is treated as a \highlight{variable}.
+\end{block}
+\pause
+\begin{exampleblock}{Constant or Variable?}
+\lstinline!val pi = 3.14!\\
+\lstinline!!\\
+\lstinline!selector match {!\\
+\lstinline!   case `pi` => "constant"!\\
+\lstinline!   case pi => "variable"!\\
+\lstinline!}!
+\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{List patterns}
+\begin{exampleblock}{List patterns}
+\onslide<1->\lstinline!selector match {!\\
+\onslide<2->\lstinline!   case Nil => "empty list"!\\
+\onslide<3->\lstinline!   case element :: Nil => "a list with exactly one element"!\\
+\onslide<4->\lstinline!   case x1 :: x2 :: xs => "a list with at least two elements"!\\
+\onslide<5->\lstinline!   case head :: tail => "a list with at least one element"!\\
+\onslide<6->\lstinline!   case _ => "not a list"!\\
+\onslide<1->\lstinline!}!
+\end{exampleblock}
+\onslide<7>
+\begin{block}{How does it work?}
+The \highlight{cons} pattern is a special case of an \highlight{infix} operation
+pattern. When seen as a pattern, an infix operation such as \lstinline!p op q!
+is equivalent to \lstinline!op(p, q)!. That is, the infix operator
+\lstinline!op! is treated as a constructor pattern. So \lstinline!::! is not
+only an operator defined on lists, but also a \lstinline!class!
+\end{block}
+\end{frame}
+
+\begin{frame}[fragile]{List patterns}
+\begin{alertblock}{Word of caution}
+Avoid mixing cons patterns with ordinary list patterns. Use either
+\lstinline!Nil! in combination with \lstinline!head :: tail! or
+\lstinline!List()! in combination with \lstinline!List(head, tail @ _*)!, but
+not both.
+\end{alertblock}
+\end{frame}
+
+\section{Case Classes}
+\begin{frame}[fragile]{Case Classes}
+Case classes are a very convenient way for encoding \highlight{data
+structures}\\
+\lstinline!!\\
+Instead of writing code like this:\\
+\lstinline!!\\
+\lstinline!class Person(val firstName: String, val lastName: String)!\\
+\lstinline!!\\
+you can simply write this:\\
+\lstinline!!\\
+\lstinline!case class Person(firstName: String, lastName: String)!
+\end{frame}
+
+\begin{frame}[fragile]{Case Classes}
+\begin{block}{Benefits}
+\begin{itemize}
+  \item \lstinline!firstname! and \lstinline!lastName! are prefixed with \lstinline!val!
+  \item \lstinline!object Person! is generated with \lstinline!apply! and \lstinline!unapply!
+  \item Implementations of \lstinline!equals!, \lstinline!hashCode! and \lstinline!toString! are generated
+\end{itemize}
+\end{block}
+\pause
+\begin{alertblock}{Price}
+\begin{itemize}
+  \item Memory footprint
+  \item Hard dependency between data and its representation
+  \item No inheritance between case classes*
+\end{itemize}
+* Data structures do not need inheritance anyway\ldots
+\end{alertblock}
+\end{frame}
+
+\begin{frame}[fragile]{Guards}
+\lstinline!case class Point(x: Int, y: Int)!\\
+\lstinline!!\\
+We want to pattern match on points with \lstinline!x == y!\\
+\lstinline!!\\
+\lstinline!case Point(x, x) => ...!\\
+\lstinline!!\\
+\alert{error: x is already defined as value x}\\
+\lstinline!!\\
+\lstinline!case Point(x, y) if x == y => ...!
+\end{frame}
+
+\section{Patterns Everywhere}
+\begin{frame}[fragile]{Patterns Everywhere - Declarations}
+\begin{block}{Patterns in declarations}
+Everything between the \lstinline!val! (or \lstinline!var!) and the equals sign
+(\lstinline!=!) is a pattern
+\end{block}
+\begin{lstlisting}
+scala> val person = Person("Martin", "Odersky")
+person: Person = Person(Martin, Odersky)
+
+scala> val Person(firstName, lastName) = person
+firstName: String = Martin
+lastName: String = Odersky
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]{Patterns Everywhere - Partial Functions}
+\begin{block}{What is a total function?}
+A total function is an ordinary function as you know it. It is defined for
+\highlight{all} the elements of the set of inputs, specified by its signature.
+\end{block}
+\pause
+\begin{exampleblock}{A total function}
+\lstinline!val f: Int => String = _.toString // is defined for all integers!
+\end{exampleblock}
+\pause
+\begin{block}{What is a partial function?}
+A partial function is a function in a more general sense. It is defined only for
+\highlight{some} elements of the set of inputs, specified by its signature.
+\end{block}
+\pause
+\begin{exampleblock}{A partial function}
+\lstinline!val f: Int => String = {!\\
+\lstinline!   case 4711 => "4711"!\\
+\lstinline!   case x => "not defined for " + x!\\
+\lstinline!} // is defined only for 4711!
+\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Patterns Everywhere - Partial Functions}
+\begin{alertblock}{Reminder}
+Scala is a statically typed language. Therefore, the type checker
+\highlight{verifies} proofs at compile time. These proofs are about
+\highlight{types}, not \alert{values}. If the partial function is not defined
+for the value it receives at runtime, an exception is thrown.
+\end{alertblock}
+\end{frame}
+
+\begin{frame}[fragile]{Patterns Everywhere - Partial Functions}
+\begin{block}{Partial where total is required}
+A partial function can be used \highlight{anywhere} a function literal can be
+used
+\end{block}
+\lstinline!!\\
+\onslide<2->\lstinline!val capitals = Map("England" -> "London", "Germany" -> "Berlin")!\\
+\onslide<3->\lstinline!// Instead of using a total function!\\
+\onslide<3->\lstinline!capitals foreach { tuple => !\\
+\onslide<3->\lstinline!   println("The capital of " + tuple._1 + " is " + tuple._2)!\\
+\lstinline!}!\\
+\onslide<4->\lstinline!// or a total function with a match!\\
+\onslide<4->\lstinline!capitals foreach { tuple => tuple match { case (country, city) =>!\\
+\onslide<4->\lstinline!   println("The capital of " + tuple._1 + " is " + tuple._2)!\\
+\lstinline!}}!\\
+\onslide<5->\lstinline!// you can use a partial function directly!\\
+\onslide<5->\lstinline!capitals foreach { case (country, city) =>!\\
+\onslide<5->\lstinline!   println("The capital of " + country + " is " + city)!\\
+\lstinline!}!
+\end{frame}
+
+\begin{frame}[fragile]{Patterns Everywhere - Partial Functions}
+\begin{exampleblock}{\lstinline!collect! is a combination of \lstinline!filter! and \lstinline!map!}
+\begin{lstlisting}
+scala> val objects = List(1, "Hello", 2, "World", 3)
+objects: List[Any] = List(1, Hello, 2, World, 3)
+
+scala> val words = objects collect { case s: String => s }
+words: List[String] = List(Hello, World)
+
+scala> val greeting = words mkString " "
+greeting: String = Hello World
+\end{lstlisting}
+\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Patterns Everywhere - for comprehensions}
+\begin{block}{for comprehensions are discussed in detail in Part 11 - Collections}
+\begin{lstlisting}
+for ((country, city) <- capitals)
+   println("The capital of " + country + " is " + city)
+\end{lstlisting}
+\end{block}
+\end{frame}
+
+\begin{frame}[fragile]{Patterns Everywhere - Exceptions}
+\begin{lstlisting}
+try bungeeJumping()
+catch {
+  case oops: CordTooLongException => ...
+  case scary: TooHighException => ...
+  case e: Exception => ...
+} finally showDeadOrAlive()
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]{Patterns Everywhere - Exceptions}
+\begin{lstlisting}
+try bungeeJumping()
+catch meIfYouCan
+finally showDeadOrAlive()
+
+val meIfYouCan: Throwable => Unit = {
+  case oops: CordTooLongException => ...
+  case scary: TooHighException => ...
+  case e: Exception => ...
+}
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]{Patterns Everywhere - Regex}
+\begin{lstlisting}
+scala> val Date = """(\d\d)/(\d\d)/(\d\d\d\d)""".r
+Date: scala.util.matching.Regex = (\d\d)/(\d\d)/(\d\d\d\d)
+
+scala> val sample = "16/05/2012"
+sample: String = 16/05/2012
+
+scala> val Date(day, month, year) = sample
+day: String = 16
+month: String = 05
+year: String = 2012
+\end{lstlisting}
+\end{frame}
+
+\section{Option Cheat Sheet}
+\begin{frame}[fragile]{Option Cheat Sheet}
+\begin{alertblock}{\lstinline!def flatMap[B](f: (A) => Option[B]): Option[B]!}
+\begin{lstlisting}
+option match {
+   case None => None
+   case Some(x) => foo(x)
+}
+\end{lstlisting}
+\end{alertblock}
+\begin{exampleblock}{\lstinline!def flatMap[B](f: (A) => Option[B]): Option[B]!}
+\lstinline!option flatMap foo!
+\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Option Cheat Sheet}
+\begin{alertblock}{\lstinline!def flatten[CC[_], B]: CC[B]!}
+\begin{lstlisting}
+option match {
+   case None => None
+   case Some(x) => x
+}
+\end{lstlisting}
+\end{alertblock}
+\begin{exampleblock}{\lstinline!def flatten[CC[_], B]: CC[B]!}
+\lstinline!option.flatten!
+\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Option Cheat Sheet}
+\begin{alertblock}{\lstinline!def map[B](f: A => B): Option[B]!}
+\begin{lstlisting}
+option match {
+   case None => None
+   case Some(x) => Some(foo(x))
+}
+\end{lstlisting}
+\end{alertblock}
+\begin{exampleblock}{\lstinline!def map[B](f: A => B): Option[B]!}
+\lstinline!option map foo!
+\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Option Cheat Sheet}
+\begin{alertblock}{\lstinline!def foreach[U](f: A => U): Unit!}
+\begin{lstlisting}
+option match {
+   case None => {}
+   case Some(x) => foo(x)
+}
+\end{lstlisting}
+\end{alertblock}
+\begin{exampleblock}{\lstinline!def foreach[U](f: A => U): Unit!}
+\lstinline!option foreach foo!
+\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Option Cheat Sheet}
+\begin{alertblock}{\lstinline!def isDefined: Boolean!}
+\begin{lstlisting}
+option match {
+   case None => false
+   case Some(_) => true
+}
+\end{lstlisting}
+\end{alertblock}
+\begin{exampleblock}{\lstinline!def isDefined: Boolean!}
+\lstinline!option.isDefined!
+\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Option Cheat Sheet}
+\begin{alertblock}{\lstinline!def isEmpty: Boolean!}
+\begin{lstlisting}
+option match {
+   case None => true
+   case Some(_) => false
+}
+\end{lstlisting}
+\end{alertblock}
+\begin{exampleblock}{\lstinline!def isEmpty: Boolean!}
+\lstinline!option.isEmpty!
+\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Option Cheat Sheet}
+\begin{alertblock}{\lstinline!def forall(pred: A => Boolean): Boolean!}
+\begin{lstlisting}
+option match {
+   case None => true
+   case Some(x) => foo(x)
+}
+\end{lstlisting}
+\end{alertblock}
+\begin{exampleblock}{\lstinline!def forall(pred: A => Boolean): Boolean!}
+\lstinline!option forall foo!
+\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Option Cheat Sheet}
+\begin{alertblock}{\lstinline!def exists(p: A => Boolean): Boolean!}
+\begin{lstlisting}
+option match {
+   case None => false
+   case Some(x) => foo(x)
+}
+\end{lstlisting}
+\end{alertblock}
+\begin{exampleblock}{\lstinline!def exists(p: A => Boolean): Boolean!}
+\lstinline!option exists foo!
+\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Option Cheat Sheet}
+\begin{alertblock}{\lstinline!def orElse[B >: A](alternative: => Option[B]): Option[B]!}
+\begin{lstlisting}
+option match {
+   case None => foo
+   case Some(x) => Some(x)
+}
+\end{lstlisting}
+\end{alertblock}
+\begin{exampleblock}{\lstinline!def orElse[B >: A](alternative: => Option[B]): Option[B]!}
+\lstinline!option orElse foo!
+\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Option Cheat Sheet}
+\begin{alertblock}{\lstinline!def getOrElse[B >: A](default: => B): B!}
+\begin{lstlisting}
+option match {
+   case None => foo
+   case Some(x) => x
+}
+\end{lstlisting}
+\end{alertblock}
+\begin{exampleblock}{\lstinline!def getOrElse[B >: A](default: => B): B!}
+\lstinline!option getOrElse foo!
+\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Option Cheat Sheet}
+\begin{alertblock}{\lstinline!def toList: List[A]!}
+\begin{lstlisting}
+option match {
+   case None => Nil
+   case Some(x) => x :: Nil
+}
+\end{lstlisting}
+\end{alertblock}
+\begin{exampleblock}{\lstinline!def toList: List[A]!}
+\lstinline!option.toList!
+\end{exampleblock}
+\end{frame}
+
+\section{Summary}
+\begin{frame}{Summary}
+\begin{itemize}
+  \item Objects and Data Structures are \highlight{diametrically opposed}
+  \item \lstinline!match! \highlight{expressions} are very powerful
+  \item Extractors help you to \highlight{extract} data out of data structures
+  \item Extractors are objects with \highlight{def unapply} or \highlight{def unapplySeq}
+  \item \highlight{Tuples} are heterogeneous collections with fixed size
+  \item \highlight{Option} is a better way of handling \alert{null}
+  \item The \highlight{order} of case alternatives is significant
+  \item Pattern matching is \highlight{deep}
+  \item \highlight{Case classes} should only be used as pure data structures
+  \item Pattern matching is \highlight{all over Scala}
+  \item Partial functions can be used \highlight{anywhere} a lambda can be used  
+\end{itemize}
+\end{frame}
