@@ -77,7 +77,7 @@ hand requires modification, recompilation, retesting and redeployment of
 \onslide<4->Objects protect you against \highlight{new types}\\
 \end{block}
 \begin{center}
-\onslide<5->Objects and Data Structures are \highlight{diametrically opposed}
+\onslide<5->Objects and Data Structures are almost \highlight{diametrically opposed}
 \end{center}
 \onslide<1->\begin{block}{Data Structures}
 \onslide<2->Data Structures have \highlight{state} (data) but \alert{no behavior}* (methods)\\
@@ -126,9 +126,11 @@ shape match {
 \begin{block}{Switch statement in Java}
 \lstinline[language=java]!switch (x) { alternatives }!
 \end{block}
+\pause
 \begin{block}{Match expression in Scala}
 \lstinline!x match { alternatives }!
 \end{block}
+\pause
 \begin{block}{Differences}
 \begin{center}
 \begin{tabular}{|l|r|}
@@ -170,7 +172,7 @@ gives you tools for building such glasses called \highlight{extractors}.
 \begin{frame}[fragile]{Extractors}
 We want to write an extractor called \lstinline!File!, which would parse file
 paths, represented by \lstinline!String!s and extract the \highlight{location},
-the \highlight{name} and the \highlight{extension} of a file path respectively.
+the \highlight{name} and the \highlight{extension} of a file respectively.
 The extractor should also take care of testing if the given \lstinline!String!
 has a form of a file path.
 \pause
@@ -370,8 +372,8 @@ treated as \highlight{constants}. Any other identifier is treated as a \highligh
 \end{exampleblock}
 \end{frame}
 
-\begin{frame}[fragile]{List patterns}
-\begin{exampleblock}{List patterns}
+\begin{frame}[fragile]{Cons pattern}
+\begin{exampleblock}{Cons pattern}
 \onslide<1->\lstinline!selector match {!\\
 \onslide<2->\lstinline!   case Nil => "empty list"!\\
 \onslide<3->\lstinline!   case element :: Nil => "a list with exactly one element"!\\
@@ -392,7 +394,7 @@ only an operator defined on lists, but also a \lstinline!class!
 
 \begin{frame}[fragile]{List patterns}
 \begin{alertblock}{Word of caution}
-Avoid mixing cons patterns with ordinary list patterns. Use either
+Avoid mixing cons patterns with ordinary sequence patterns. Use either
 \lstinline!Nil! in combination with \lstinline!head :: tail! or
 \lstinline!List()! in combination with \lstinline!List(head, tail @ _*)!, but
 not both.
@@ -505,7 +507,7 @@ used
 \lstinline!}!\\
 \onslide<4->\lstinline!// or a total function with a match!\\
 \onslide<4->\lstinline!capitals foreach { tuple => tuple match { case (country, city) =>!\\
-\onslide<4->\lstinline!   println("The capital of " + tuple._1 + " is " + tuple._2)!\\
+\onslide<4->\lstinline!   println("The capital of " + country + " is " + city)!\\
 \lstinline!}}!\\
 \onslide<5->\lstinline!// you can use a partial function directly!\\
 \onslide<5->\lstinline!capitals foreach { case (country, city) =>!\\
@@ -742,7 +744,7 @@ option match {
   \item \highlight{Tuples} are heterogeneous collections with fixed size
   \item \highlight{Option} is a better way of handling \alert{null}
   \item The \highlight{order} of case alternatives is significant
-  \item Pattern matching is \highlight{deep}
+  \item Pattern matching is \highlight{deep} (fully recursive)
   \item \highlight{Case classes} should only be used as pure data structures
   \item Pattern matching is \highlight{all over Scala}
   \item Partial functions can be used \highlight{anywhere} a lambda can be used  

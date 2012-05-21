@@ -1,0 +1,670 @@
+\part[Traits]{Traits}
+\begin{frame}{Traits}
+Code reuse is very important to all applications, especially to large ones like
+in the enterprise. Scala gives you functional constructs and pushes the OO
+paradigm towards its ideal. Functional paradigm shines with
+\highlight{higher-order functions}. \highlight{Inheritance} is in the spotlight
+of the object-oriented programming. But inheritance is known to be very
+\alert{fragile}. Most programming books encourage the usage of composition over inheritance.
+Joshua Blochs famous book \highlight{``Effective Java''} devotes a whole chapter
+to this topic called \highlight{``Favor composition over inheritance''}. In a
+way, Scala enables you to \highlight{express composition through inheritance}!
+This concept is called \highlight{``mixin composition''}.
+\end{frame}
+
+\section{Interfaces}
+\subsection{Thin Interfaces}
+\begin{frame}[fragile]{Thin Interfaces}
+\begin{block}{Thin Interfaces}
+Works exactly the same way as in Java, but instead of the
+\lstinline!implements! keyword, the \lstinline!with! keyword is
+used.
+\end{block}
+\pause
+\begin{exampleblock}{Thin Interfaces}
+\onslide<2->\lstinline!class Animal!\\
+\onslide<3->\lstinline!trait Pet {!\\
+\onslide<3->\lstinline!   def allowedToSleepInBed: Boolean!\\
+\onslide<3->\lstinline!}!\\
+\onslide<4->\lstinline!class Cat extends Animal with Pet {!\\
+\onslide<4->\lstinline!   val allowedToSleepInBed = true!\\
+\onslide<4->\lstinline!}!\\
+\onslide<5->\lstinline!class Turtle extends Animal with Pet {!\\
+\onslide<5->\lstinline!   def allowedToSleepInBed = false!\\
+\onslide<5->\lstinline!}!
+\end{exampleblock}
+\end{frame}
+\subsection{Rich Interfaces}
+\begin{frame}{Rich Interfaces}
+\begin{center}
+\begin{tabular}{|l|cc|}
+\hline
+& Concrete members & Abstract members\\
+\hline
+Java's concrete classes & \highlight{yes} & \alert{no}\\
+Java's abstract classes & \highlight{yes} & \highlight{yes}\\
+Java's interfaces & \alert{no} & \highlight{yes}\\
+\hline
+\hline
+Scala's concrete classes & \highlight{yes} & \alert{no}\\
+Scala's abstract classes & \highlight{yes} & \highlight{yes}\\
+Scala's traits & \textcolor{green}{yes} & \highlight{yes}\\
+\hline
+\end{tabular}
+\end{center}
+\end{frame}
+
+\begin{frame}[fragile]{Rich Interfaces}
+\onslide<1->\lstinline!class Animal!\\
+\onslide<1->\lstinline!trait Pet {!\\
+\onslide<1->\lstinline!   def allowedToSleepInBed: Boolean!\\
+\onslide<2->\lstinline{   def disallowedToSleepInBed: Boolean = !allowedToSleepInBed}\\
+\onslide<1->\lstinline!}!\\
+\onslide<1->\lstinline!class Cat extends Animal with Pet {!\\
+\onslide<1->\lstinline!   val allowedToSleepInBed = true!\\
+\onslide<1->\lstinline!}!\\
+\onslide<1->\lstinline!class Turtle extends Animal with Pet {!\\
+\onslide<1->\lstinline!   def allowedToSleepInBed = false!\\
+\onslide<1->\lstinline!}!
+\end{frame}
+
+\begin{frame}[fragile]{Rich Interfaces}
+\begin{block}{Rich interface \lstinline!Ordered! from the Scala library}
+The only thing the \highlight{implementers} need to do is implement the \lstinline!def compare(that: A): Int!.
+The \highlight{clients} on the other hand have the convenience of choosing
+between \highlight{4 additional methods}.
+\end{block}
+
+\begin{block}{Rich interface \lstinline!Ordered! from the Scala library}
+\begin{lstlisting}
+trait Ordered[A] {
+   def compare(that: A): Int
+   
+   def <  (that: A): Boolean = (this compare that) <  0
+   def >  (that: A): Boolean = (this compare that) >  0
+   def <= (that: A): Boolean = (this compare that) <= 0
+   def >= (that: A): Boolean = (this compare that) >= 0
+}
+\end{lstlisting}
+\end{block}
+\end{frame}
+
+\section{Stackable Modifications}
+\begin{frame}{Stackable Modifications}
+Traits are much more powerful than simple interfaces. In fact traits act as
+interfaces almost ``by accident''. Scala is a very minimalistic language. Instead
+of introducing ``new'' keywords like \lstinline!interface! or
+\lstinline!implements! Scala designers decided to make traits do all the work.
+\end{frame}
+
+\subsection{Adding Functionality}
+\begin{frame}[fragile]{Stackable Modifications - Adding Functionality}
+Imagine you want to log the creation time of your objects. In order to do that you
+define the \lstinline!class Timestamp!. This class
+introduces a single member \lstinline!val creationTime! which calls a private
+member \lstinline!def currentTime! as soon as an instance of
+\lstinline!Timestamp! is constructed. So the only thing you can do with objects
+of this \lstinline!class! is ask them when they were created.
+\end{frame}
+
+\begin{frame}[fragile]{Stackable Modifications - Adding Functionality}
+\begin{lstlisting}
+class Timestamp {
+   val creationTime = currentTime
+   
+   private def currentTime = {
+      import java.util.Calendar._
+      val calendar = getInstance
+      def hours = calendar.get(HOUR_OF_DAY)
+      def minutes = calendar.get(MINUTE)
+      def seconds = calendar.get(SECOND)
+      def milliseconds = calendar.get(MILLISECOND)
+      
+      hours + ":" + minutes + ":" + seconds + ":" + milliseconds
+   }
+}
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]{Stackable Modifications - Adding Functionality}
+Now imagine you have a \lstinline!class Message! and you want to add the
+functionality of the \lstinline!Timestamp! to it. What options do we have and
+what design decision will we go with?
+\end{frame}
+
+\begin{frame}[fragile]{Stackable Modifications - Adding Functionality}
+\begin{alertblock}{Inheritance}
+Inheritance is of course the wrong way for three obvious reasons. First, a
+\lstinline!Message! \emph{is not} a \lstinline!Timestamp!, which is a clear indication against
+inheritance. Second, due to Java's single inheritance policy you will not be
+able to extend any other class. You can either extend \lstinline!Timestamp! or say
+\lstinline!AbstractMessage!, but not both! The third problem occurs when the
+\lstinline!class Message! is provided by a third party. So you can't even dream
+about modifying it.
+\end{alertblock}
+\end{frame}
+
+\begin{frame}[fragile]{Stackable Modifications - Adding Functionality}
+\begin{block}{Composition}
+Composition is the right way, but it still has one problem and one potential
+inconvenience. The ``third party'' issue is obviously the problem, which
+can neither be solved by inheritance nor by composition alone.
+The potential inconvenience, on the other hand, is far from obvious to Java
+programmers. Java's composition concept \alert{does not define a type}! This
+issue should not be taking lightly. The flexibility of the indirect transfer of
+control and static type checking are sacrificed literally for nothing!
+\end{block}
+\end{frame}
+
+\begin{frame}[fragile]{Stackable Modifications - Adding Functionality}
+\begin{block}{Composition through Inheritance}
+Inheritance and composition together might do the trick. Suppose
+\lstinline!Message! is provided by a third party and is not \lstinline!final!!
+Now you can extend it with your own \lstinline!class MessageWithTimestamp! and
+add the \lstinline!Timestamp! via composition. \alert{The type still gets lost
+though}. Thus methods which take \lstinline!Timestamp! cannot be invoked with
+\lstinline!MessageWithTimestamp!.
+\end{block}
+\end{frame}
+
+\begin{frame}[fragile]{Stackable Modifications - Adding Functionality}
+\begin{block}{Mixin Composition}
+Scala, as well as Java \alert{does not support multiple inheritance}. Thus a
+class can only extend a \highlight{single type} (Since traits can be
+used to defined types, the type our class extends from might be implemented as a trait itself).
+Good news: there is another way of using a trait! Instead of
+\highlight{extending} a trait you can choose to \highlight{mix} it
+\highlight{into} a class (or another trait for that matter).
+\end{block}
+\pause
+\begin{block}{Mixin Composition}
+\lstinline!// Thus there is a difference between:!\\
+\lstinline!class A extends B!\\
+\lstinline!// and!\\
+\lstinline!class A extends SomethingElse with B!\\
+\lstinline!// where B is a trait.!
+\end{block}
+\end{frame}
+
+\begin{frame}[fragile]{Stackable Modifications - Adding Functionality}
+\begin{lstlisting}
+trait Timestamp { // Timestamp is a trait now
+   val creationTime = currentTime
+   
+   private def currentTime = {
+      import java.util.Calendar._
+      val calendar = getInstance
+      def hours = calendar.get(HOUR_OF_DAY)
+      def minutes = calendar.get(MINUTE)
+      def seconds = calendar.get(SECOND)
+      def milliseconds = calendar.get(MILLISECOND)
+      
+      hours + ":" + minutes + ":" + seconds + ":" + milliseconds
+   }
+}
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]{Stackable Modifications - Adding Functionality}
+\begin{block}{Mixin Composition}
+\begin{itemize}
+   \item The type is preserved thanks to \highlight{inheritance}
+   \item The new functionality is gained thanks to \highlight{composition}
+   \item The third party issue is resolved thanks to \highlight{linearization}
+\end{itemize}
+\end{block}
+\begin{exampleblock}{Mixin Composition}
+\onslide<1->\lstinline!// static* mixin!\\
+\onslide<1->\lstinline!class MyMessage extends com.thirdparty.Message with Timestamp!\\
+\onslide<2->\lstinline!// dynamic* mixin!\\
+\onslide<2->\lstinline!val message = new com.thirdparty.Message with Timestamp!\\
+\onslide<3->\lstinline!showCreationTimeOf(message)!\\
+\onslide<3->\lstinline!def showCreationTimeOf(some: Timestamp) {!\\
+\onslide<3->\lstinline!   println(some.creationTime)!\\
+\onslide<3->\lstinline!}!\\
+\end{exampleblock}
+\onslide<2->* static/dynamic should not be confused with compile time/runtime here.
+\end{frame}
+
+\subsection{Modifying Functionality}
+\pictureframe{Stackable Modifications - Modifying Functionality}{resources/Stackable.pdf}
+
+\begin{frame}{Stackable Modifications - Modifying Functionality}
+\begin{center}
+We want to write a racing game ;)
+\end{center}
+\end{frame}
+
+\begin{frame}[fragile]{Stackable Modifications - Modifying Functionality}
+\begin{exampleblock}{Base}
+\begin{lstlisting}
+abstract class Car {
+   def model: String
+   def topSpeed: Int
+   def maxAcceleration: Int
+   override def toString = {
+      def brand = getClass.getSimpleName
+      brand + " " + model + " " + topSpeed + " " + maxAcceleration
+   }
+}
+\end{lstlisting}
+\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Stackable Modifications - Modifying Functionality}
+\begin{exampleblock}{Core(s)}
+\begin{lstlisting}
+class OrdinaryCar(override val model: String) extends Car {
+   def topSpeed = 220 // km/h
+   def maxAcceleration = 8000 // rpm
+}
+
+class SportsCar(override val model: String) extends Car {
+   def topSpeed = 300 // km/h
+   def maxAcceleration = 11000 // rpm
+}
+\end{lstlisting}
+\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Stackable Modifications - Modifying Functionality}
+\begin{exampleblock}{Stackable Modifications}
+\begin{lstlisting}
+trait Spoiler extends Car {
+   abstract override def topSpeed =
+      (super.topSpeed * 1.02).toInt
+}
+\end{lstlisting}
+\pause
+\begin{lstlisting}
+trait EngineControlUnit extends OrdinaryCar {
+   abstract override def topSpeed = 
+      (super.topSpeed * 1.5).toInt
+}
+\end{lstlisting}
+\pause
+\begin{lstlisting}
+trait TurboCharger extends OrdinaryCar {
+   abstract override def maxAcceleration =
+      (super.maxAcceleration * 1.25).toInt
+}
+\end{lstlisting}
+\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Stackable Modifications - Modifying Functionality}
+Each trait is a one-liner, but has so much going on. If a trait extends a type,
+it will become a modification trait. It declares \highlight{for which type a
+modification is available}. For instance any \lstinline!Car! might have a
+\lstinline!Spoiler!, but only an \lstinline!OrdinaryCar! can be tuned with a
+\lstinline!TurboCharger!. An \lstinline!abstract override! keyword combination is
+required, because the methods we want to modify by \highlight{overriding} them
+are \highlight{abstract}. This is the key to Scala's linearization model, which
+is less dangerous than multiple inheritance. Since \highlight{super calls are
+dynamically* bound}, a call to an abstract method might actually succeed, as
+long as the modification trait is mixed in \emph{after} another trait or class that gives a concrete
+definition to the method.
+\newline
+\newline
+* Super calls are bound statically in classes. For instance you can always tell
+at compile time exactly which method implementation will be invoked, when you write
+\lstinline!super.toString!. In traits, however, they are dynamically bound.
+\end{frame}
+
+\begin{frame}[fragile]{Stackable Modifications - Modifying Functionality}
+\begin{exampleblock}{Defining some cars}
+\begin{lstlisting}
+class Lamborghini(override val model: String) 
+   extends SportsCar(model) with Spoiler
+  
+class BMW(override val model: String)
+   extends OrdinaryCar(model) with Spoiler
+   with EngineControlUnit with TurboCharger
+\end{lstlisting}
+\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Stackable Modifications - Modifying Functionality}
+\begin{block}{The \lstinline!App! trait}
+The \lstinline!App trait! is defined somewhere in the Scala library and is
+implicitly imported in any .scala file along with lots of other useful
+things. \lstinline!App! has a single member - the \lstinline!main! method.
+If you mix \lstinline!App! into an \lstinline!object! the code from the primary
+constructor (which is the code between the members of the object) is put into
+the main method. So basically it defines the main method for you so you do not
+have to do it yourself.
+\end{block}
+\begin{exampleblock}{Playing around with cars}
+\begin{lstlisting}
+object TestDrive extends App {
+   // Lamborghini Murcielago 306 11000
+   println(new Lamborghini("Murcielago"))
+   // BMW M3-GTR 336 10000
+   println(new BMW("M3-GTR"))
+}
+\end{lstlisting}
+\end{exampleblock}
+\end{frame}
+
+\subsection{Intercepting Functionality}
+\begin{frame}{Stackable Modifications - Intercepting Functionality}
+The racing game showed how modifications can be made from the inside of the API.
+This happened because the methods in question were not parametrized. This
+section discusses how modifications can be made when they come from the outside
+of the API, thus intercepting method arguments. We will use the Java collection
+API to demonstrate Scala's seamless interoperability with Java.
+\end{frame}
+
+\begin{frame}[fragile]{Stackable Modifications - Intercepting Functionality}
+\begin{exampleblock}{Modification trait}
+\begin{lstlisting}
+trait CaseIgnorance extends java.util.Set[String] {
+  abstract override def add(e: String) =
+    super.add(e.toLowerCase)
+
+  abstract override def contains(e: Any) =
+    super.contains(e.asInstanceOf[String].toLowerCase)
+
+  abstract override def remove(e: Any) =
+    super.remove(e.asInstanceOf[String].toLowerCase)
+}
+\end{lstlisting}
+\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Stackable Modifications - Intercepting Functionality}
+\begin{exampleblock}{Modification trait}
+\begin{lstlisting}
+trait Logging extends java.util.Set[String] {
+  abstract override def add(e: String) = {
+    println("Add: " + e)
+    super.add(e)
+  }
+
+  abstract override def remove(e: Any) = {
+    println("Remove: " + e)
+    super.remove(e)
+  }
+}
+\end{lstlisting}
+\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Stackable Modifications - Intercepting Functionality}
+\onslide<1->\lstinline!object Traitor extends App {!\\
+\onslide<1->\lstinline!   import java.util._!\\
+\lstinline!!\\
+\onslide<2->\lstinline!   val firstLogThenIgnoreCase =!\\
+\onslide<2->\lstinline!      new HashSet[String] with CaseIgnorance with Logging!\\
+\onslide<4->\lstinline!   // prints out "Add: HI" then adds "hi" to the collection!\\
+\onslide<3->\lstinline!   firstLogThenIgnoreCase.add("HI")!\\
+\lstinline!!\\
+\onslide<2->\lstinline!   val firstIgnoreCaseThenLog =!\\
+\onslide<2->\lstinline!      new HashSet[String] with Logging with CaseIgnorance!\\
+\onslide<4->\lstinline!   // adds "hi" to the collection then prints out "Add: hi"!\\
+\onslide<3->\lstinline!   firstIgnoreCaseThenLog.add("HI")!\\
+\lstinline!!\\
+\onslide<5->\lstinline!   // prints out "true"!\\
+\onslide<5->\lstinline!   println(firstLogThenIgnoreCase.contains("Hi") &&!\\
+\onslide<5->\lstinline!           firstIgnoreCaseThenLog.contains("hI"))!\\
+\onslide<1->\lstinline!}!
+\end{frame}
+
+\begin{frame}{Stackable Modifications - Intercepting Functionality}
+Notice the significance of the order of the mixins. Given one modification trait you can
+define two versions of sets (you can either mix it in or not). Given two modifications,
+as in our example you can choose from one to five different variations of sets. The
+linearization model gives you great flexibility.
+\newline
+\newline
+As word of caution you need to remember that with great power comes great responsibility.
+By controlling the order of mixins you control the state. Watching out for state
+modifications has proven itself anything else than simple. For instance state
+modifications of the sets are intentional, but a car with a spoiler and a turbo charger should not
+be faster than a car with a turbo charger and a spoiler. It is not, so don't
+panic.
+\end{frame}
+
+\section{Dependency Injection}
+\begin{frame}[fragile]{Dependency Injection}
+\begin{exampleblock}{Direct dependency}
+\begin{lstlisting}
+class B
+class A(b: B)
+\end{lstlisting}
+\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Dependency Injection}
+\begin{exampleblock}{Dependency Inversion}
+\begin{lstlisting}
+trait C
+class B extends C
+class A(b: C)
+\end{lstlisting}
+\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Dependency Injection}
+\begin{block}{Dependency Injection}
+The concrete instance of \lstinline!C! is chosen and injected by an external
+dependency injection framework like Spring or google-guice.
+\end{block}
+\begin{exampleblock}{Dependency Injection}
+\begin{lstlisting}
+trait C
+class B extends C
+class A // magically depends upon C
+\end{lstlisting}
+\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Dependency Injection with traits}
+\begin{block}{What is open recursion?}
+Open recursion [\ldots] \emph{``is the ability for one method body to invoke
+another method of the same object via a special variable called self or, in some
+languages, this. The special behavior of self is that it is late-bound, allowing
+a method defined in one class to invoke another method that is defined later, in
+some subclass of the first.'' - Ralf Hinze}
+\end{block}
+\pause
+\begin{exampleblock}{Syntax for changing the name of \lstinline!this!}
+\lstinline!trait A {!\\
+\lstinline!   self =>!\\
+\lstinline!}!
+\end{exampleblock}
+\pause
+\begin{exampleblock}{Syntax for changing the type of \lstinline!this!}
+\lstinline!trait A {!\\
+\lstinline!   self: SomeOtherType =>!\\
+\lstinline!}!
+\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Dependency Injection with traits}
+\onslide<1->\begin{lstlisting}
+trait Fruits {
+   def fruitBasket = Set("apple", "orange", "banana")
+}
+\end{lstlisting}
+\onslide<2->\lstinline!trait FruitSalad {!\\
+\onslide<3->\lstinline!   self: Fruits => // now fruitBasket is in scope!\\
+\lstinline!!\\  
+\onslide<2->\lstinline!   def salad = fruitBasket.mkString( // fruitBasket is not in scope!\\
+\onslide<2->\lstinline!   start = "Take one ",!\\
+\onslide<2->\lstinline!   sep = " one ",!\\
+\onslide<2->\lstinline!   end = " mix them all together and you are done.")!\\
+\onslide<2->\lstinline!}!
+\end{frame}
+
+\begin{frame}[fragile]{Dependency Injection with traits}
+\begin{alertblock}{Static type checking}
+\begin{lstlisting}
+scala> object Main extends App with FruitSalad
+<console>:9: error: illegal inheritance;
+ self-type Main.type does not conform to 
+ FruitSalads selftype FruitSalad with Fruits
+       object Main extends App with FruitSalad
+                                    ^
+\end{lstlisting}
+\end{alertblock}
+\begin{exampleblock}{Static type checking}
+\begin{lstlisting}
+object Main extends App with FruitSalad with Fruits {
+   // Take one apple one orange one banana mix them all
+   // together and you are done.
+   println(salad)
+}
+\end{lstlisting}
+\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Dependency Injection with traits}
+\begin{exampleblock}{Circular Dependencies}
+\begin{lstlisting}
+trait Egg {
+   self: Chicken =>
+}
+
+trait Chicken {
+   self: Egg =>
+}
+\end{lstlisting}
+\end{exampleblock}
+\pause
+\begin{exampleblock}{Circular Dependencies}
+\begin{lstlisting}
+class A extends Egg with Chicken
+class B extends Chicken with Egg
+\end{lstlisting}
+\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Dependency Injection - The Cake Pattern}
+\begin{exampleblock}{Database component}
+\begin{lstlisting}
+trait DatabaseComponent {
+  def database: Database
+
+  class Database {
+    def addUser(user: String) = {
+      println(user + " added to real db")
+      true
+    }
+  }
+}
+\end{lstlisting}
+\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Dependency Injection - The Cake Pattern}
+\begin{exampleblock}{Service component}
+\begin{lstlisting}
+trait ServiceComponent {
+  // ServiceComponent depends upon DatabaseComponent
+  this: DatabaseComponent =>
+  
+  def service: Service
+  
+  class Service {
+    def createUser(user: String) = {
+      // database is provided via mixin
+      database.addUser(user)
+    }
+  }
+}
+\end{lstlisting}
+\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Dependency Injection - The Cake Pattern}
+\begin{exampleblock}{Static wiring}
+\begin{lstlisting}
+trait ProductionEnvironment extends DatabaseComponent
+  with ServiceComponent {
+  def database = new Database
+  def service = new Service
+}
+
+trait TestEnvironment extends DatabaseComponent
+  with ServiceComponent {
+  // Mock implementations on the next slide
+  def database = new MockDatabase
+  def service = new MockService
+}
+\end{lstlisting}
+\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Dependency Injection - The Cake Pattern}
+\begin{exampleblock}{Mocks}
+\begin{lstlisting}
+class MockDatabase extends Database {
+  override def addUser(user: String) = {
+    println(user + " added to mock db")
+    true
+  }
+}
+
+class MockService extends Service {
+  override def createUser(user: String) = {
+    println("service works")
+    true
+  }
+}
+\end{lstlisting}
+\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Dependency Injection - The Cake Pattern}
+\begin{exampleblock}{Tests}
+\begin{lstlisting}
+import org.scalatest._
+import org.scalatest.matchers._
+
+class ServiceTestSuitWithMockServiceAndMockDatabase
+  extends TestEnvironment with FunSuite with ShouldMatchers {
+
+  test("Test user creation") {
+    // prints out "service works"
+    service.createUser("TestUser") should be(true)
+  }
+}
+\end{lstlisting}
+\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Dependency Injection - The Cake Pattern}
+\begin{exampleblock}{Tests}
+\begin{lstlisting}
+import org.scalatest._
+import org.scalatest.matchers._
+
+class ServiceTestSuitWithRealServiceAndMockDatabase
+  extends TestEnvironment with FunSuite with ShouldMatchers {
+
+  // real service but the Database is still a mock!
+  override val service = new Service
+  
+  test("Test user creation") {
+    // prints out "TestUser added to mock db"
+    service.createUser("TestUser") should be(true)
+  }
+}
+\end{lstlisting}
+\end{exampleblock}
+\end{frame}
+
+\section{Summary}
+\begin{frame}{Summary}
+\begin{itemize}
+  \item Traits are a very powerful concept
+  \item Traits enable \highlight{component-driven} development
+  \item Traits can have \highlight{concrete methods}
+  \item Traits super calls are \highlight{dynamically bound}
+  \item Scala does not support multiple inheritance
+  \item Scala's \highlight{linearization} model provides great flexibility
+  \item Mixin composition is a great way for adding behavior
+  \item Traits give you dependency injection for free
+\end{itemize}
+\end{frame}
