@@ -161,9 +161,9 @@ control and static type checking are sacrificed literally for nothing!
 Inheritance and composition together might do the trick. Suppose
 \lstinline!Message! is provided by a third party and is not \lstinline!final!!
 Now you can extend it with your own \lstinline!class MessageWithTimestamp! and
-add the \lstinline!Timestamp! via composition. \alert{The type still gets lost
-though}. Thus methods which take \lstinline!Timestamp! cannot be invoked with
-\lstinline!MessageWithTimestamp!.
+add the \lstinline!Timestamp! via composition. \alert{The type changes though}.
+Thus methods which take a \lstinline!Timestamp! as their arguments cannot be
+invoked with \lstinline!MessageWithTimestamp!.
 \end{block}
 \end{frame}
 
@@ -171,7 +171,7 @@ though}. Thus methods which take \lstinline!Timestamp! cannot be invoked with
 \begin{block}{Mixin Composition}
 Scala, as well as Java \alert{does not support multiple inheritance}. Thus a
 class can only extend a \highlight{single type} (Since traits can be
-used to defined types, the type our class extends from might be implemented as a trait itself).
+used to define types, the type our class extends from might be implemented as a trait itself).
 Good news: there is another way of using a trait! Instead of
 \highlight{extending} a trait you can choose to \highlight{mix} it
 \highlight{into} a class (or another trait for that matter).
@@ -327,7 +327,7 @@ class BMW(override val model: String)
 \begin{frame}[fragile]{Stackable Modifications - Modifying Functionality}
 \begin{block}{The \lstinline!App! trait}
 The \lstinline!App trait! is defined somewhere in the Scala library and is
-implicitly imported in any .scala file along with lots of other useful
+implicitly imported in every .scala file along with lots of other useful
 things. \lstinline!App! has a single member - the \lstinline!main! method.
 If you mix \lstinline!App! into an \lstinline!object! the code from the primary
 constructor (which is the code between the members of the object) is put into
@@ -406,7 +406,7 @@ trait Logging extends java.util.Set[String] {
 \lstinline!!\\
 \onslide<5->\lstinline!   // prints out "true"!\\
 \onslide<5->\lstinline!   println(firstLogThenIgnoreCase.contains("Hi") &&!\\
-\onslide<5->\lstinline!           firstIgnoreCaseThenLog.contains("hI"))!\\
+\onslide<5->\lstinline!            firstIgnoreCaseThenLog.contains("hI"))!\\
 \onslide<1->\lstinline!}!
 \end{frame}
 
@@ -462,10 +462,10 @@ class A // magically depends upon C
 \begin{frame}[fragile]{Dependency Injection with traits}
 \begin{block}{What is open recursion?}
 Open recursion [\ldots] \emph{``is the ability for one method body to invoke
-another method of the same object via a special variable called self or, in some
-languages, this. The special behavior of self is that it is late-bound, allowing
-a method defined in one class to invoke another method that is defined later, in
-some subclass of the first.'' - Ralf Hinze}
+another method of the same object via a special variable called \highlight{self}
+or, in some languages, \highlight{this}. The special behavior of self is that it
+is late-bound, allowing a method defined in one class to invoke another method
+that is defined later, in some subclass of the first.'' - Ralf Hinze}
 \end{block}
 \pause
 \begin{exampleblock}{Syntax for changing the name of \lstinline!this!}
@@ -582,15 +582,15 @@ trait ServiceComponent {
 \begin{lstlisting}
 trait ProductionEnvironment extends DatabaseComponent
   with ServiceComponent {
-  def database = new Database
-  def service = new Service
+  val database = new Database
+  val service = new Service
 }
 
 trait TestEnvironment extends DatabaseComponent
   with ServiceComponent {
   // Mock implementations on the next slide
-  def database = new MockDatabase
-  def service = new MockService
+  val database = new MockDatabase
+  val service = new MockService
 }
 \end{lstlisting}
 \end{exampleblock}
