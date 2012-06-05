@@ -318,6 +318,12 @@ range: immutable.Range = Range(10, 7, 4, 1)
 \end{lstlisting}
 \end{frame}
 
+\begin{frame}{Further Readings}
+\begin{center}
+\link{http://vimeo.com/28760673}{Extreme Cleverness: Function Data Structures in Scala}
+\end{center}
+\end{frame}
+
 \section{Performance Characteristics}
 \begin{frame}{Performance characteristics}
 \begin{center}
@@ -731,7 +737,7 @@ def sum(numbers: Seq[Int]) = {
   var result = 0
   var index = 0
   while(index < numbers.length) {
-    val current = numbers(index)
+    def current = numbers(index)
     result += current
     index += 1
   }
@@ -755,7 +761,7 @@ def makeString(numbers: List[Int]) = {
   var result = numbers.head.toString
   var tail = numbers.tail
   while(tail != Nil) {
-    val current = tail.head
+    def current = tail.head
     result += " " + current
     tail = tail.tail
   }
@@ -846,7 +852,7 @@ constrained to be the supertype of the element type \lstinline!A!
 \end{center}
 \end{frame}
 
-\begin{frame}{Furhter Readings}
+\begin{frame}{Further Readings}
 \begin{center}
 \link{http://oldfashionedsoftware.com/2009/07/10/scala-code-review-foldleft-and-foldright/}{Folding}
 \end{center}
@@ -939,14 +945,14 @@ val people = List(
 Person("John", 12, "EN", "DE"), 
 Person("Fred", 38, "EN", "FR"))
 \end{lstlisting}
-\begin{exampleblock}{\lstinline!flatMap! - map andThen flatten!}
+\begin{exampleblock}{\lstinline!flatMap! - \lstinline!map andThen flatten!}
 \begin{lstlisting}
 people flatMap { person =>
   person.spokenLanguages map { language =>
      person.name + " " + language } }
 \end{lstlisting}
 \end{exampleblock}
-\begin{exampleblock}{\lstinline!flatMap! - map andThen flatten!}
+\begin{exampleblock}{\lstinline!flatMap! - \lstinline!map andThen flatten!}
 \begin{lstlisting}
 for {
   person <- people
@@ -1059,6 +1065,41 @@ for {
 \end{exampleblock}
 \begin{center}
 \lstinline!List(Ullman, Jeffrey, Ullman, Jeffrey)!
+\end{center}
+\end{frame}
+
+\begin{frame}[fragile]{Monadic for Comprehensions}
+\begin{alertblock}{Error handling with Null}
+\begin{lstlisting}
+def getConnection(user: String, pw: String): Connection = {
+  if(user != null)
+    if (pw != null)
+      new Connection(user, pw)
+    else null
+  else null
+}
+\end{lstlisting}
+\end{alertblock}
+\begin{exampleblock}{Error handling with Option}
+\begin{lstlisting}
+def getConnection(user: Option[String], pw: Option[String])
+                                         : Option[Connection] = {
+  for { 
+    u <- user
+    p <- pw 
+  } yield new Connection(u, p)
+}
+\end{lstlisting}
+\end{exampleblock}
+\end{frame}
+
+\begin{frame}{Further Readings}
+\begin{center}
+\link{http://www.youtube.com/watch?feature=player_embedded&v=Mw_Jnn_Y5iA\#!}{Scala
+Monads: Declutter Your Code With Monadic Design}
+\end{center}
+\begin{center}
+\link{http://www.scala-lang.org/docu/files/collections-api/collections.html}{The Scala 2.8 Collections API}
 \end{center}
 \end{frame}
 
