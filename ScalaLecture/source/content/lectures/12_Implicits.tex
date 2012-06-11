@@ -84,10 +84,9 @@ object DSL {
   def produce(e: Exception): Condition = new Condition(e)
 
   class Condition(e: Exception) {
-    def when(condition: => Boolean): Unit = {
+    def when(condition: => Boolean): Unit =
       if (condition)
         throw e
-    }
   }
 \end{lstlisting}
 \onslide<1->\begin{lstlisting}
@@ -191,31 +190,35 @@ class HelloWorldSpec extends Specification { def is =
 \begin{block}{What problem do implicits try to solve?}
 \highlight{Extending} \alert{closed} libraries
 \end{block}
+\pause
 \begin{block}{How do they do it?}
 When the code fails to compile, the compiler does not give up. It seeks help in
 the so called \highlight{implicit scope}. If the compiler finds helper utilities
 it \highlight{implicitly} inserts them into your code
 \end{block}
+\pause
 \begin{block}{What is the implicit scope?}
 The implicit scope is another \highlight{dimension} for values, variables,
 methods and objects
 \end{block}
 \end{frame}
 
-\begin{frame}[fragile]{Implicit Conversions}
+\begin{frame}[fragile]{Implicit Conversions by example}
 \begin{block}{The library to extend}
 Our guinea-pig library is the class \lstinline!String!
 \end{block}
+\pause
 \begin{block}{The behaviour to add}
 We want our strings to have the method \lstinline!extractUpperCase!
 \end{block}
+\pause
 \begin{alertblock}{\lstinline!String! is final}
 \lstinline!final class String! cannot be extended via inheritance or mixin
 composition. Strings are closed for modification AND for extension.
 \end{alertblock}
 \end{frame}
 
-\begin{frame}[fragile]{Implicit Conversions}
+\begin{frame}[fragile]{Implicit Conversions by example}
 \begin{block}{Steps you would need to take in any OO language}
 \begin{enumerate}
   \item Create a \lstinline!class StringWrapper(value: String)!
@@ -224,6 +227,7 @@ composition. Strings are closed for modification AND for extension.
   \item call \lstinline!convert("GmbH").extractUpperCase!
 \end{enumerate}
 \end{block}
+\pause
 \begin{exampleblock}{Steps you would need to do in Scala to make it look good}
 \begin{enumerate}
   \item insert the conversion method into the implicit scope
@@ -232,7 +236,7 @@ composition. Strings are closed for modification AND for extension.
 \end{exampleblock}
 \end{frame}
 
-\begin{frame}[fragile]{Implicit Conversions}
+\begin{frame}[fragile]{Implicit Conversions by example}
 \begin{exampleblock}{Extending String}
 \begin{lstlisting}
 class StringWrapper(value: String) {
@@ -241,6 +245,7 @@ class StringWrapper(value: String) {
 implicit def convert(value: String) = new StringWrapper(value)
 \end{lstlisting}
 \end{exampleblock}
+\pause
 \begin{exampleblock}{Using Extensions}
 \begin{lstlisting}
 scala> convert("HyperText Transfer Protocol").extractUpperCase
@@ -252,7 +257,7 @@ res1: String = HTTP
 \end{exampleblock}
 \end{frame}
 
-\begin{frame}[fragile]{Implicit Conversions}
+\begin{frame}[fragile]{Implicit Conversions by example}
 \begin{exampleblock}{Extending String}
 \begin{lstlisting}
 class StringWrapper(value: String) {
@@ -276,6 +281,7 @@ The \lstinline!object Predef! from the Scala library is automatically imported
 into every .scala file. \lstinline!Predef! inserts a lot of useful implicit
 conversions into the implicit scope.
 \end{block}
+\pause
 \begin{exampleblock}{\lstinline!Predef! - Primitive Widenings}
 \begin{lstlisting}
 implicit def int2long(x: Int): Long = x.toLong
@@ -350,6 +356,18 @@ scala> def x { 10 }
 x: Unit
 \end{lstlisting}
 \end{alertblock}
+\begin{exampleblock}{Do not forget the equals sign}
+\begin{lstlisting}
+scala> def x = { 10 }
+x: Int = 10
+\end{lstlisting}
+\end{exampleblock}
+\begin{exampleblock}{Do not forget the equals sign}
+\begin{lstlisting}
+scala> def x = 10
+x: Int = 10
+\end{lstlisting}
+\end{exampleblock}
 \end{frame}
 
 \subsection{Rules for Implicits}
@@ -425,6 +443,7 @@ convert1(convert2(x)) + y
 \begin{block}{One-at-a-time Rule}
 Whenever code type checks as it is written, no implicits are attempted
 \end{block}
+\pause
 \begin{block}{Where implicits are tried}
 \begin{enumerate}
   \item conversion to an expected type (call \lstinline!m(a: A)! with \lstinline!b: B!)
@@ -440,13 +459,15 @@ Whenever code type checks as it is written, no implicits are attempted
 Haskell: Type class (language feature)\\
 Scala: Typeclass (pattern)
 \end{block}
+\pause
 \begin{block}{What is the typeclasses pattern?}
 Adapter pattern with implicit sugar
 \end{block}
+\pause
 \begin{block}{What are typeclasses trying to achieve?}
-Typeclasses are a pattern for \highlight{decoupling} ad hoc polymorphism
+Typeclasses are a pattern for better \highlight{decoupling}, thus making ad hoc
+polymorphism, provided by inheritance more ad hoc (more flexible)
 \end{block}
-
 \end{frame}
 
 \begin{frame}[fragile]{Typeclasses by example}
@@ -456,6 +477,7 @@ alternatives}, each of which comes with its \highlight{own constructor}. It
 usually comes with a way to \highlight{decompose the type through pattern
 matching}. Algebraic data types can be emulated in Scala with case classes.
 \end{block}
+\pause
 \begin{exampleblock}{The \lstinline!Shape! ADT}
 \begin{lstlisting}
 sealed trait Shape
@@ -500,14 +522,14 @@ object AreaCalculator {
 \end{frame}
 
 \begin{frame}[fragile]{Typeclasses by example}
-\begin{block}{AreaConverter is a typeCLASS}
+\begin{block}{\lstinline!AreaConverter! is a typeCLASS}
 \begin{lstlisting}
 trait AreaConverter[T] {
   def calculateArea(shape: T): Double
 }
 \end{lstlisting}
 \end{block}
-\begin{block}{These are the INSTANCES of AreaConverter typeclass}
+\begin{block}{These are the INSTANCES of the \lstinline!AreaConverter! typeclass}
 \begin{lstlisting}
 object SquareAreaConverter extends AreaConverter[Square] {
   def calculateArea(s: Square) = s.side * s.side
@@ -586,14 +608,14 @@ res2: Double = 50.0
 \end{frame}
 
 \begin{frame}[fragile]{Typeclasses by example}
-\begin{exampleblock}{AreaConverter}
+\begin{exampleblock}{\lstinline!AreaConverter!}
 \begin{lstlisting}
 trait AreaConverter[T] {
   def calculateArea(shape: T): Double
 }
 \end{lstlisting}
 \end{exampleblock}
-\begin{exampleblock}{AreaCalculator}
+\begin{exampleblock}{\lstinline!AreaCalculator!}
 \begin{lstlisting}
 object AreaCalculator {
   def calculateArea[T](shape: T)
@@ -601,7 +623,7 @@ object AreaCalculator {
 }
 \end{lstlisting}
 \end{exampleblock}
-\begin{exampleblock}{AreaCalculator with some sugar}
+\begin{exampleblock}{\lstinline!AreaCalculator! with some sugar}
 \begin{lstlisting}
 object AreaCalculator {
   def calculateArea[T : AreaConverter](shape: T) =
@@ -612,14 +634,14 @@ object AreaCalculator {
 \end{frame}
 
 \begin{frame}[fragile]{Typeclasses by example}
-\begin{exampleblock}{AreaConverter}
+\begin{exampleblock}{\lstinline!ShapeView!}
 \begin{lstlisting}
 trait ShapeView[T] {
   def calculateArea(shape: T): Double
 }
 \end{lstlisting}
 \end{exampleblock}
-\begin{exampleblock}{AreaCalculator}
+\begin{exampleblock}{\lstinline!AreaCalculator!}
 \begin{lstlisting}
 object AreaCalculator {
   def calculateArea[T](shape: T)
@@ -627,7 +649,7 @@ object AreaCalculator {
 }
 \end{lstlisting}
 \end{exampleblock}
-\begin{exampleblock}{AreaCalculator with some sugar}
+\begin{exampleblock}{\lstinline!AreaCalculator! with some sugar}
 \begin{lstlisting}
 object AreaCalculator {
   def calculateArea[T : ShapeView](shape: T) =
@@ -637,17 +659,81 @@ object AreaCalculator {
 \end{exampleblock}
 \end{frame}
 
-\begin{frame}{TODO}
-\begin{itemize}
-  \item scopes
-  \item refactoring
-  \item views vllt
-\end{itemize}
+\begin{frame}[fragile]{Scopes}
+\begin{exampleblock}{Typeclass}
+\begin{lstlisting}
+trait ShowView[-T] {
+  def show(t: T): String
+}
+\end{lstlisting}
+\end{exampleblock}
+\begin{exampleblock}{Typeinstances}
+\begin{lstlisting}
+object Instances {
+  implicit object IntShow extends ShowView[Int] {
+    def show(i: Int) = i.toString
+  }
+  implicit object SeqShow extends ShowView[Seq[_]] {
+    def show(s: Seq[_]) = s mkString " "
+  }
+}
+\end{lstlisting}
+\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Scopes}
+\begin{exampleblock}{Algorithm (no ambiguity violation due to scoping)}
+\begin{lstlisting}
+object Shower {
+  import Instances._
+  def shows[T: ShowView](t: T) = implicitly[ShowView[T]].show(t)
+  def main(args: Array[String]): Unit = {
+    println(shows(5)) // 5
+  }
+
+  def main(args: Array[String]): Unit = {
+    implicit object ShowBinaryInt extends ShowView[Int] {
+      def show(i: Int) = i.toBinaryString
+    }
+    println(shows(5)) // 101
+  }
+}
+\end{lstlisting}
+\end{exampleblock}
+\end{frame}
+
+\begin{frame}{Typeclasses VS Inheritance}
+\begin{center}
+\begin{tabular}{|l|l|}
+\hline
+\textsc{Typeclasses} & \textsc{Inheritance}\\
+\hline
+\hline
+static resolution & dynamic dispatch\\
+\hline
+\alert{slower} due to the abstraction level & \highlight{faster}\\
+\hline
+\alert{boiler-platey} & nice \highlight{syntax} support\\
+\hline
+\highlight{more} flexible & \alert{less} flexible\\
+\hline
+\end{tabular}
+\end{center}
 \end{frame}
 
 \section{Summary}
-\begin{frame}{Summary}
+\begin{frame}[fragile]{Summary}
 \begin{itemize}
-  \item
+  \item Scala is \highlight{well suited} for DSLs
+  \item Implicits \highlight{extend} \alert{closed} libraries
+  \item Implicits \highlight{embrace} readability
+  \item Implicits tend to \alert{hide} the direction of the transfer of control
+  \item Implicit scope is another \highlight{dimension} for values and definitions
+  \item \lstinline!def implicitly[T](implicit e: T) = e!\\
+  summons implicit values from the nether world
+  \item \lstinline!Predef! brings a lot of implicit goodness into every .scala file
+  \item Implicits conform to very \alert{strict rules}
+  \item Implicits can be overloaded with \highlight{scoping}
+  \item Typeclasses are a \highlight{worthy alternative} to inheritence
 \end{itemize}
 \end{frame}
