@@ -440,7 +440,7 @@ convert1(convert2(x)) + y
 \end{frame}
 
 \begin{frame}[fragile]{Rules for Implicits V - Explicit-First Rule}
-\begin{block}{One-at-a-time Rule}
+\begin{block}{Explicit-First Rule}
 Whenever code type checks as it is written, no implicits are attempted
 \end{block}
 \pause
@@ -608,6 +608,21 @@ res2: Double = 50.0
 \end{frame}
 
 \begin{frame}[fragile]{Typeclasses by example}
+\begin{exampleblock}{OO notation is also possible with few modifications to the implicits}
+\begin{lstlisting}
+scala> Circle(10).calculateArea
+res0: Double = 314.1592653589793
+
+scala> Square(5).calculateArea
+res1: Double = 25.0
+
+scala> Rectangle(5, 10).calculateArea
+res2: Double = 50.0
+\end{lstlisting}
+\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Typeclasses by example}
 \begin{exampleblock}{\lstinline!AreaConverter!}
 \begin{lstlisting}
 trait AreaConverter[T] {
@@ -718,6 +733,15 @@ static resolution & dynamic dispatch\\
 \highlight{more} flexible & \alert{less} flexible\\
 \hline
 \end{tabular}
+\end{center}
+\end{frame}
+
+\begin{frame}{Further Readings}
+\begin{center}
+\link{http://www.youtube.com/watch?v=sVMES4RZF-8}{Tutorial: Typeclasses in Scala with Dan Rosen}
+\end{center}
+\begin{center}
+\link{http://www.youtube.com/watch?feature=player_embedded&v=yYo0gANYViE}{The Typeclass Pattern - An Alternative to Inheritance}
 \end{center}
 \end{frame}
 
