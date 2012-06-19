@@ -26,27 +26,28 @@
 
 \begin{frame}{Heisenbug}
 \emph{``[from Heisenberg's Uncertainty Principle in quantum physics] A bug that
-disappears or alters its behavior when one attempts to probe or isolate it.
-(This usage is not even particularly fanciful; the use of a debugger sometimes
-alters a program's operating environment significantly enough that buggy code,
+disappears or \alert{alters} its \alert{behavior when} one attempts to
+\alert{probe} or isolate it. (This usage is not even particularly fanciful; the
+use of a debugger sometimes alters a program's operating environment significantly enough that buggy code,
 such as that which relies on the values of uninitialized memory, behaves quite
-differently.) Antonym of Bohr bug; see also mandelbug, schroedinbug. \alert{In
-C, nine out of ten heisenbugs result from uninitialized auto variables, fandango on core
-phenomena (esp. lossage related to corruption of the malloc arena) or errors
-that smash the stack.}''} - \link{www.definitions.net}{www.definitions.net}
+differently.) Antonym of Bohr bug; see also mandelbug, schroedinbug. In
+\alert{C}, nine out of ten heisenbugs result from uninitialized auto variables,
+fandango on core phenomena (esp. lossage related to corruption of the malloc
+arena) or errors that smash the stack.''} -
+\link{www.definitions.net}{www.definitions.net}
 \end{frame}
 
 
 \begin{frame}[fragile]{The Root of the Problem}
 \begin{alertblock}{Problem}
 \begin{itemize}
-  \item Non-determinism caused by concurrent threads accessing shared mutable
-  state
+  \item Non-determinism caused by concurrent threads accessing \alert{shared
+  mutable state}
   \item We can encapsulate state in actors or transactions, but the fundamental
   problem is the same
 \end{itemize}
 \begin{center}
-non-determinism = parallel processing + mutable state
+non-determinism = parallel processing + \alert{mutable state}
 \end{center}
 \end{alertblock}
 \begin{center}
@@ -58,7 +59,7 @@ non-determinism = parallel processing + mutable state
 \begin{exampleblock}{Solution}
 \begin{itemize}
   \item To get deterministic processing, \alert{avoid} the mutable state!
-  \item Avoiding mutable state means programming functionally
+  \item Avoiding mutable state means programming \highlight{functionally}
 \end{itemize}
 \end{exampleblock}
 \end{frame}
@@ -86,13 +87,15 @@ res0: Int = 6
 \section{Akka}
 \begin{frame}{Akka}
 \begin{block}{What is Akka?}
-Akka is a toolkit and runtime for building highly concurrent, distributed, and
-fault tolerant event-driven applications on the JVM.
+Akka is a \highlight{toolkit} and runtime for building highly concurrent,
+distributed, and fault tolerant event-driven applications on the JVM.
 \end{block}
+\pause
 \begin{block}{What is in the toolkit?}
-Actors, typed actors, logging, event bus, scheduler, futures, dataflow
-concurrency, fault tolerance, dispatchers, routing, remoting, serialization,
-FSM, STM, Agents, Transactors, IO, Testkit, MicroKernel, ZeroMQ
+\highlight{Actors}, typed actors, logging, event bus, scheduler,
+\highlight{futures}, dataflow concurrency, fault tolerance, dispatchers,
+routing, remoting, serialization, FSM, STM, Agents, Transactors, IO, Testkit,
+MicroKernel, ZeroMQ
 \end{block}
 \end{frame}
 
@@ -106,6 +109,7 @@ FSM, STM, Agents, Transactors, IO, Testkit, MicroKernel, ZeroMQ
   \item Akka/Scala Actors
 \end{enumerate}
 \end{block}
+\pause
 \begin{block}{Reminder j.u.c primitives}
 \begin{itemize}
   \item \lstinline!Callable!, \lstinline!Runnable!
@@ -131,6 +135,7 @@ A \highlight{Future} is a \highlight{read-handle} to a single value
 \highlight{(read-many)} that \highlight{may} be available within a specific
 time-frame.
 \end{block}
+\pause
 \begin{block}{What is a Promise?}
 A \highlight{Promise} is a \highlight{write-handle} to a single value
 \highlight{(write-once)} that \highlight{should} be made available within a
@@ -193,6 +198,7 @@ def sum(f1: Future[Int], f2: Future[Int]): Future[Int] = for {
 } yield v1 + v2
 \end{lstlisting}
 \end{exampleblock}
+\pause
 \begin{exampleblock}{Futures are asynchronous}
 \begin{lstlisting}
 scala> val f3 = sum(future { Thread.sleep(5000); 1 }, future { 2 })
@@ -303,23 +309,23 @@ Futures with Akka 2.0 (Video)}
 
 \begin{frame}{The Actor Model of Computation}
 \begin{block}{What is the Actor model?}
-\emph{``The Actor model is a mathematical theory that treats “Actors” as the
-universal primitives of concurrent digital computation. The model has been used both as a
-framework for a theoretical understanding of concurrency, and as the theoretical
-basis for several practical implementations of concurrent systems. Unlike
-previous models of computation, the Actor model was inspired by
-\highlight{physical laws}. It was also influenced by the programming languages
-Lisp, Simula 67 and Smalltalk-72, as well as ideas for Petri Nets, capability-based systems and
-packet switching. The advent of massive concurrency through client-cloud
-computing and many-core computer architectures has galvanized interest in the
-Actor model.''} - Carl Hewitt
+\emph{``The Actor model is a \highlight{mathematical theory} that treats
+``Actors'' as the \highlight{universal primitives of concurrent digital
+computation}. The model has been used both as a framework for a theoretical
+understanding of concurrency, and as the theoretical basis for several practical
+implementations of concurrent systems. Unlike previous models of computation,
+the Actor model was inspired by \highlight{physical laws}. It was also
+influenced by the programming languages Lisp, Simula 67 and Smalltalk-72, as
+well as ideas for Petri Nets, capability-based systems and packet switching. The
+advent of massive concurrency through client-cloud computing and many-core
+computer architectures has galvanized interest in the Actor model.''} - Carl Hewitt
 \end{block}
 \end{frame}
 
 \begin{frame}{The Actor Model of Computation}
 \begin{block}{What is an Actor?}
-The Actor is the fundamental unit of computation. As the fundamental unit of
-computation it has to embody three things:
+The Actor is the \highlight{fundamental unit of computation}. As the fundamental
+unit of computation it has to embody three things:
 \begin{enumerate}
   \item Processing
   \item Storage
@@ -340,6 +346,18 @@ In response to a message the Actor receives, it can:
 \end{block}
 \end{frame}
 
+\begin{frame}{The Actor Model of Computation}
+\begin{block}{Actors are purely asynchronous}
+\begin{itemize}
+  \item When an actor receives a message it \highlight{does not block}
+  \item When an actor sends a message it \highlight{does not block}
+  \item When an actor processes a message his \highlight{mailbox is not blocked}
+  \item Actor processes \highlight{one} message at a time \highlight{(no shared state)}
+  \item Actors \highlight{abstract away} concurrency
+\end{itemize}
+\end{block}
+\end{frame}
+
 \begin{frame}{Further Readings}
 \begin{center}
 \link{http://arxiv.org/ftp/arxiv/papers/1008/1008.1459.pdf}{The Actor Model of
@@ -351,30 +369,18 @@ Actor Model of Computation - Carl Hewitt et al 2012 (Video)}
 \end{center}
 \end{frame}
 
-\begin{frame}{The Actor Model of Computation}
-\begin{block}{Actors are purely asynchronous}
-\begin{itemize}
-  \item When an actor receives a message it does not block
-  \item When an actor sends a message it does not block
-  \item When an actor takes messages out of the mailbox the mailbox is not blocked
-  \item Actor processes one message at a time
-  \item Actors \highlight{abstract away} concurrency
-\end{itemize}
-\end{block}
-\end{frame}
-
 \pictureframe{Actors in Akka}{resources/Actor1.pdf}
 \pictureframe{Actors in Akka}{resources/Actor2.pdf}
 
 \begin{frame}{Actors in Akka}
 \begin{block}{What is an Actor?}
 \begin{itemize}
-  \item Actor is an object
-  \item It has state
-  \item It has behaviour
-  \item It has a mailbox
-  \item It has a supervisor strategy
-  \item It can have children
+  \item Actor is an \highlight{object}
+  \item It has \highlight{state}
+  \item It has \highlight{behavior}
+  \item It has a \highlight{mailbox}
+  \item It has a \highlight{supervisor strategy}
+  \item It can have \highlight{children}
   \item Message ordering is guaranteed on a \highlight{per-sender} basis.
   \item An actor can process one message at a time
   \item Run on \highlight{event-based} threads
@@ -389,22 +395,22 @@ All of this is encapsulated behind an \lstinline!ActorRef!
 \begin{itemize}
   \item Independent, \alert{heap-sharing} execution contexts
   \item Scheduled by the operating system
-  \item Creation is expensive in Java
-  \item JVM can manage ca. 1000 threads
+  \item Creation is \alert{expensive} in Java
+  \item JVM can manage ca 1000 threads
 \end{itemize}
 \end{block}
 \begin{exampleblock}{Actors are light}
 \begin{itemize}
-  \item Share nothing
-  \item Own schedules/schedulers
-  \item Creation is cheap in Java
-  \item Consume only memory - ca 2.7 million actors per GB of heap
+  \item \highlight{Share nothing}
+  \item Own schedules/schedulers (per actor system)
+  \item Creation is \highlight{cheap} in Java
+  \item \highlight{Consume only memory} - ca 2.7 million actors per GB of heap
 \end{itemize}
 \end{exampleblock}
 \end{frame}
 
-\pictureframe{Fault Tolerance}{resources/supervision/00.pdf}
-\pictureframe{Fault Tolerance}{resources/supervision/01.pdf}
+\pictureframe{Fault Tolerance - Chaos}{resources/supervision/00.pdf}
+\pictureframe{Fault Tolerance - Order (Supervisor Hierarchy)}{resources/supervision/01.pdf}
 \pictureframe{Fault Tolerance}{resources/supervision/02.pdf}
 \pictureframe{Fault Tolerance}{resources/supervision/03.pdf}
 \pictureframe{Fault Tolerance}{resources/supervision/04.pdf}
@@ -414,7 +420,7 @@ All of this is encapsulated behind an \lstinline!ActorRef!
 \pictureframe{Fault Tolerance}{resources/supervision/08.pdf}
 \pictureframe{Fault Tolerance}{resources/supervision/09.pdf}
 \pictureframe{Fault Tolerance}{resources/supervision/10.pdf}
-\pictureframe{Fault Tolerance}{resources/supervision/11.pdf}
+\pictureframe{Fault Tolerance - Distributed setup}{resources/supervision/11.pdf}
 
 \begin{frame}[fragile]{Actors}
 \begin{exampleblock}{Creating actors}
@@ -442,10 +448,10 @@ system.shutdown()
 
 \begin{frame}[fragile]{Fault Tolerance}
 \begin{lstlisting}
-  import akka.actor.OneForOneStrategy
-  import akka.actor.SupervisorStrategy._
-  import akka.util.duration._
- 
+import akka.actor._
+import akka.util.duration._
+
+class Supervisor extends Actor {
   override val supervisorStrategy = 
     OneForOneStrategy(
       maxNrOfRetries = 10,
@@ -454,6 +460,10 @@ system.shutdown()
         case _: NullPointerException => Restart
         case _: IllegalArgumentException => Stop
         case _: Exception => Escalate
+        
+  def receive = {
+    case x => sender ! x
+  }
 }
 \end{lstlisting}
 \end{frame}
@@ -608,6 +618,7 @@ class Listener extends Actor {
   \item The \alert{single-threaded} world is coming to an end
   \item The future of computing lies in \highlight{concurrency}
   \item Concurrency is very very \alert{hard}
+  \item \alert{Avoid} (shared) mutable state as much as you can
   \item Akka is a very powerful \highlight{state of the art} concurrency toolkit
   \item \highlight{Futures} and \highlight{Promises} are very useful abstractions for concurrency
   \item Actors are great for \highlight{distributed computing}
